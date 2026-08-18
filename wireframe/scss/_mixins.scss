@@ -1,0 +1,100 @@
+// --- BREAKPOINTS (mobile-first) ---
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-xxl: 1536px;
+
+@mixin sm  { @media (min-width: $bp-sm)  { @content; } }
+@mixin md  { @media (min-width: $bp-md)  { @content; } }
+@mixin lg  { @media (min-width: $bp-lg)  { @content; } }
+@mixin xl  { @media (min-width: $bp-xl)  { @content; } }
+@mixin xxl { @media (min-width: $bp-xxl) { @content; } }
+
+// --- ACCESSIBILITY ---
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) { @content; }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// --- LAYOUT ---
+@mixin container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+@mixin container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+@mixin section-padding {
+  padding-block: var(--space-7);
+  @include lg { padding-block: var(--space-8); }
+}
+
+@mixin section-padding-lg {
+  padding-block: var(--space-8);
+  @include lg { padding-block: var(--space-9); }
+}
+
+// --- ANIMATION ---
+@mixin entrance-animation($delay: 0ms) {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--duration-entrance) var(--ease-out) $delay,
+    transform var(--duration-entrance) var(--ease-out) $delay;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @include reduced-motion {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@mixin hover-lift {
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @include reduced-motion {
+    &:hover { transform: none; }
+  }
+}
+
+@mixin hover-fade($property: background-color) {
+  transition: #{$property} var(--duration-fast) var(--ease-in-out);
+}

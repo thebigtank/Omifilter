@@ -1,0 +1,99 @@
+@use 'mixins' as *;
+
+// Container utility
+.container {
+  @include container;
+}
+
+.container--narrow {
+  @include container-narrow;
+}
+
+// Section rhythm
+.section {
+  @include section-padding;
+}
+
+.section--lg {
+  @include section-padding-lg;
+}
+
+.section--full {
+  width: 100%;
+}
+
+// Background variants
+.section--dark {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-on-dark);
+}
+
+.section--alt {
+  background-color: var(--color-bg-secondary);
+}
+
+// Section title + eyebrow + lead
+.section__title {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-4);
+  @include md { font-size: var(--text-4xl); }
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-family: var(--font-family-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.section__lead {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 46rem;
+  margin-bottom: var(--space-6);
+}
+
+// Dark-section overrides
+.section--dark .section-eyebrow { color: var(--color-text-on-dark-muted); }
+.section--dark .section__lead { color: var(--color-text-on-dark-muted); }
+
+// Common grid patterns
+.grid-2 {
+  display: grid;
+  gap: var(--grid-gap);
+  @include md { grid-template-columns: repeat(2, 1fr); }
+}
+
+.grid-3 {
+  display: grid;
+  gap: var(--grid-gap);
+  @include md { grid-template-columns: repeat(2, 1fr); }
+  @include lg { grid-template-columns: repeat(3, 1fr); }
+}
+
+.grid-4 {
+  display: grid;
+  gap: var(--grid-gap);
+  @include sm { grid-template-columns: repeat(2, 1fr); }
+  @include lg { grid-template-columns: repeat(4, 1fr); }
+}
+
+// Split layout (feature rows)
+.split {
+  display: grid;
+  gap: var(--grid-gap);
+  align-items: center;
+  @include md { grid-template-columns: 1fr 1fr; }
+
+  &--reversed {
+    @include md {
+      > :first-child { order: 2; }
+      > :last-child { order: 1; }
+    }
+  }
+}

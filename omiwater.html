@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmiWater — Clean Water From Your Tap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --deep: #0A1628;
+    --water: #0D4F8C;
+    --clean: #1A8FD1;
+    --danger: #C0392B;
+    --danger-light: #FDECEA;
+    --safe: #0E7A5F;
+    --safe-light: #E8F5F1;
+    --cream: #F7F4EF;
+    --text: #1A1A2E;
+    --muted: #6B7280;
+    --white: #FFFFFF;
+    --gold: #D4A017;
+    --border: #E5E7EB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--deep);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 24px 80px;
+    text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 120%, rgba(13,79,140,0.6) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 30%, rgba(26,143,209,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Animated water ripple background */
+  .ripple-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ripple-bg span {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(26,143,209,0.15);
+    animation: ripple 8s linear infinite;
+  }
+  .ripple-bg span:nth-child(1) { width: 400px; height: 400px; left: -100px; top: -100px; animation-delay: 0s; }
+  .ripple-bg span:nth-child(2) { width: 600px; height: 600px; right: -200px; bottom: -200px; animation-delay: 2s; }
+  .ripple-bg span:nth-child(3) { width: 300px; height: 300px; left: 40%; top: 20%; animation-delay: 4s; }
+
+  @keyframes ripple {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--clean);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    max-width: 900px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--clean);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: rgba(255,255,255,0.7);
+    max-width: 560px;
+    line-height: 1.7;
+    margin: 20px auto 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-stat-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 48px;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--danger);
+    display: block;
+    line-height: 1;
+  }
+
+  .hero-stat .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+    max-width: 140px;
+  }
+
+  .hero-cta {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-primary {
+    background: var(--clean);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 18px 48px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,143,209,0.4); }
+
+  .btn-ghost {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-indicator span {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+
+  .scroll-indicator svg { color: rgba(255,255,255,0.3); }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── ECOLI ALARM SECTION ── */
+  .alarm {
+    background: var(--danger);
+    padding: 80px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .alarm::before {
+    content: 'E.COLI';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 20vw;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .alarm-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .alarm .section-eyebrow { color: rgba(255,255,255,0.6); }
+
+  .alarm h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  .alarm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .alarm-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 28px;
+    backdrop-filter: blur(8px);
+  }
+
+  .alarm-card .source {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .alarm-card .stat {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .alarm-card p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+  }
+
+  /* ── TRUTH SECTION ── */
+  .truth {
+    background: var(--cream);
+    padding: 100px 24px;
+  }
+
+  .truth-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .truth .section-eyebrow { color: var(--danger); }
+
+  .truth h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .truth-lead {
+    font-size: 1.15rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 680px;
+    margin-bottom: 60px;
+  }
+
+  .contaminant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .contaminant {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .contaminant:first-child { border-top: 1px solid var(--border); }
+
+  .contaminant-index {
+    background: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+
+  .contaminant-index span {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.1em;
+  }
+
+  .contaminant-body {
+    padding: 32px 36px;
+    background: white;
+    transition: background 0.2s;
+  }
+
+  .contaminant:hover .contaminant-body { background: var(--danger-light); }
+
+  .contaminant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 8px;
+  }
+
+  .contaminant-body p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .contaminant-body strong {
+    color: var(--text);
+  }
+
+  /* ── HOW IT GETS IN ── */
+  .pathway {
+    background: var(--deep);
+    padding: 100px 24px;
+    color: white;
+  }
+
+  .pathway-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .pathway .section-eyebrow { color: var(--clean); }
+
+  .pathway h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 60px;
+  }
+
+  .pathway-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+
+  .pathway-steps::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 80px;
+    right: 80px;
+    height: 1px;
+    background: rgba(26,143,209,0.3);
+    z-index: 0;
+  }
+
+  .pathway-step {
+    text-align: center;
+    padding: 0 20px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(13,79,140,0.6);
+    border: 2px solid var(--clean);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+  }
+
+  .pathway-step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+  }
+
+  .pathway-step p {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  /* ── WATER SOURCES ── */
+  .sources {
+    background: white;
+    padding: 100px 24px;
+  }
+
+  .sources-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .sources .section-eyebrow { color: var(--danger); }
+
+  .sources h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .sources-intro {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    max-width: 680px;
+  }
+
+  .source-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .source-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .source-card-header {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .source-card.danger .source-card-header { background: var(--danger-light); }
+
+  .source-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  .source-card-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--danger);
+  }
+
+  .source-card-header .verdict {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--danger);
+    margin-top: 4px;
+  }
+
+  .source-card-body {
+    padding: 24px;
+    background: white;
+  }
+
+  .source-card-body p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .source-card-body .finding {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--danger-light);
+    border-left: 3px solid var(--danger);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--danger);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── SYMPTOMS ── */
+  .symptoms {
+    background: var(--cream);
+    padding: 100px 24px;
+  }
+
+  .symptoms-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .symptoms .section-eyebrow { color: var(--danger); }
+
+  .symptoms h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .symptoms-intro {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    max-width: 680px;
+  }
+
+  .symptom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .symptom-item {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .symptom-item:hover {
+    border-color: var(--danger);
+    transform: translateY(-2px);
+  }
+
+  .symptom-item .symptom-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+
+  .symptom-item h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .symptom-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .symptom-callout {
+    margin-top: 48px;
+    padding: 32px;
+    background: var(--danger);
+    border-radius: 12px;
+    color: white;
+  }
+
+  .symptom-callout h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .symptom-callout p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.7;
+  }
+
+  /* ── PRODUCT REVEAL ── */
+  .product {
+    background: white;
+    padding: 100px 24px;
+  }
+
+  .product-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .product .section-eyebrow { color: var(--safe); }
+
+  .product h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .product h2 em {
+    font-style: normal;
+    color: var(--safe);
+  }
+
+  .product-lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 640px;
+    margin-bottom: 64px;
+  }
+
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .product-layout { grid-template-columns: 1fr; }
+    .pathway-steps::before { display: none; }
+  }
+
+  .product-visual {
+    background: linear-gradient(135deg, #E8F5F1 0%, #D0EDE6 100%);
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    position: sticky;
+    top: 40px;
+  }
+
+  .product-emoji {
+    font-size: 6rem;
+    display: block;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 8px 24px rgba(14,122,95,0.3));
+  }
+
+  .product-visual h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--safe);
+    margin-bottom: 8px;
+  }
+
+  .product-visual p {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .product-badge {
+    display: inline-block;
+    background: var(--safe);
+    color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-top: 16px;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .feature-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .feature-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--safe-light);
+    border: 2px solid var(--safe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .feature-check svg { color: var(--safe); }
+
+  .feature-item h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .feature-item p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    background: var(--safe);
+    padding: 100px 24px;
+    color: white;
+  }
+
+  .how-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .how .section-eyebrow { color: rgba(255,255,255,0.6); }
+
+  .how h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 60px;
+  }
+
+  .how-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .how-step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 32px;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    align-items: center;
+  }
+
+  .how-step:last-child { border-bottom: none; }
+
+  .how-step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.2);
+    line-height: 1;
+    text-align: center;
+  }
+
+  .how-step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .how-step p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+
+  /* ── MATH SECTION ── */
+  .math {
+    background: var(--cream);
+    padding: 100px 24px;
+  }
+
+  .math-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .math .section-eyebrow { color: var(--water); }
+
+  .math h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 60px;
+  }
+
+  .math-calculator {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+  }
+
+  .calc-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .calc-row:last-child { border-bottom: none; }
+
+  .calc-row.total {
+    background: var(--safe-light);
+    border-top: 2px solid var(--safe);
+  }
+
+  .calc-row .calc-label {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .calc-row .calc-label span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .calc-row .calc-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--danger);
+    text-align: right;
+  }
+
+  .calc-row.total .calc-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--safe);
+  }
+
+  .calc-row.total .calc-value {
+    color: var(--safe);
+    font-size: 1.3rem;
+  }
+
+  .math-verdict {
+    font-size: 1.2rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .math-verdict strong {
+    color: var(--safe);
+    font-size: 1.4rem;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    background: white;
+    padding: 100px 24px;
+  }
+
+  .testimonials-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .testimonials .section-eyebrow { color: var(--safe); }
+
+  .testimonials h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 48px;
+  }
+
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .testimonial-card {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+  }
+
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: rgba(0,0,0,0.06);
+    line-height: 1;
+  }
+
+  .testimonial-card p {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--water);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .author-location {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── PRICING / CTA ── */
+  .pricing {
+    background: var(--deep);
+    padding: 100px 24px;
+    color: white;
+  }
+
+  .pricing-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pricing .section-eyebrow { color: var(--clean); }
+
+  .pricing h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: white;
+    margin-bottom: 60px;
+    line-height: 1.15;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .pricing-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 32px 24px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: white;
+  }
+
+  .pricing-card:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--clean);
+    transform: translateY(-4px);
+  }
+
+  .pricing-card.featured {
+    background: var(--clean);
+    border-color: var(--clean);
+    position: relative;
+  }
+
+  .pricing-card.featured::before {
+    content: 'BEST VALUE';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--deep);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .pricing-card .pack-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 12px;
+  }
+
+  .pricing-card.featured .pack-label { color: rgba(255,255,255,0.8); }
+
+  .pricing-card .pack-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pricing-card .pack-per {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 16px;
+  }
+
+  .pricing-card .pack-save {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .pricing-guarantee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.875rem;
+    margin-bottom: 40px;
+  }
+
+  .pricing-guarantee svg { color: var(--clean); flex-shrink: 0; }
+
+  .pricing-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-large {
+    background: var(--clean);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 22px 60px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(26,143,209,0.5);
+  }
+
+  .trust-row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .trust-item span { font-size: 1rem; }
+
+  /* ── FAQ ── */
+  .faq {
+    background: var(--cream);
+    padding: 100px 24px;
+  }
+
+  .faq-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .faq .section-eyebrow { color: var(--water); }
+
+  .faq h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 48px;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .faq-q {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .faq-q::before {
+    content: 'Q';
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--clean);
+    background: rgba(26,143,209,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .faq-a {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.7;
+    padding-left: 38px;
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: var(--danger);
+    padding: 100px 24px;
+    text-align: center;
+    color: white;
+  }
+
+  .final-cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    color: white;
+    max-width: 700px;
+    margin: 0 auto 24px;
+    line-height: 1.15;
+  }
+
+  .final-cta p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+  }
+
+  footer .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--clean);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  /* ── STICKY NAV ── */
+  .sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,22,40,0.95);
+    backdrop-filter: blur(12px);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transform: translateY(-100%);
+    transition: transform 0.3s;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sticky-nav.visible { transform: translateY(0); }
+
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: white;
+  }
+
+  .nav-brand em {
+    font-style: normal;
+    color: var(--clean);
+  }
+
+  .nav-cta {
+    background: var(--clean);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .hero-stat-row { gap: 24px; }
+    .contaminant { grid-template-columns: 60px 1fr; }
+    .contaminant-index span { font-size: 1rem; }
+    .contaminant-body { padding: 20px; }
+    .calc-row { padding: 16px 20px; }
+    .how-step { grid-template-columns: 40px 1fr; gap: 16px; }
+    .how-step-num { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="nav-brand">Omi<em>Water</em></div>
+  <a href="#pricing" class="nav-cta">Order Now →</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="ripple-bg">
+    <span></span><span></span><span></span>
+  </div>
+
+  <span class="hero-eyebrow">OmiWater Nigeria — Tap Water Protection System</span>
+
+  <h1>The Water Killing<br><em>Nigerian Families</em><br>Is Invisible.</h1>
+
+  <p class="hero-sub">
+    You cannot see E. coli. You cannot taste it. You cannot smell it.
+    But University of Ibadan researchers found it in <strong style="color:white">every borehole sample tested</strong> across Lagos.
+    Your family drank water today. Was it safe?
+  </p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <span class="number">87%</span>
+      <span class="label">of sachet water samples contain E. coli or Salmonella</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">100%</span>
+      <span class="label">of borehole samples tested showed fecal contamination</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">11M+</span>
+      <span class="label">Nigerians affected by waterborne disease annually</span>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#pricing" class="btn-primary">Protect My Family Now →</a>
+    <button class="btn-ghost" onclick="document.getElementById('truth').scrollIntoView({behavior:'smooth'})">
+      Show me the evidence first ↓
+    </button>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── ECOLI ALARM ── -->
+<section class="alarm">
+  <div class="alarm-inner">
+    <span class="section-eyebrow">The Science — Peer-Reviewed Research</span>
+    <h2>What Nigerian Scientists<br>Found In Your Water.</h2>
+
+    <div class="alarm-grid">
+      <div class="alarm-card">
+        <span class="source">University of Ibadan — Borehole Study</span>
+        <div class="stat">100%</div>
+        <p>Every single borehole water sample tested across Lagos residential areas contained fecal indicator bacteria. Not some. <strong>Every one.</strong></p>
+      </div>
+
+      <div class="alarm-card">
+        <span class="source">Journal of Water & Health — Sachet Study</span>
+        <div class="stat">87%</div>
+        <p>Of sachet water samples — the "pure water" your children drink every day — tested positive for E. coli, Salmonella, or both.</p>
+      </div>
+
+      <div class="alarm-card">
+        <span class="source">Rainy Season Research</span>
+        <div class="stat">3×</div>
+        <p>Contamination levels in Nigerian groundwater spike three times higher during rainy season as surface runoff floods into boreholes and wells.</p>
+      </div>
+
+      <div class="alarm-card">
+        <span class="source">WHO West Africa Data</span>
+        <div class="stat">60M</div>
+        <p>Nigerians currently lack access to safe drinking water. The government water system alone cannot solve this. <strong>You must protect your own home.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUTH ── -->
+<section class="truth" id="truth">
+  <div class="truth-inner">
+    <span class="section-eyebrow">What Is In Your Water Right Now</span>
+    <h2>Five Contaminants.<br>One Glass of Water.</h2>
+    <p class="truth-lead">
+      Nigerian tap water, borehole water, and even commercially produced sachet water 
+      carry a cocktail of contaminants that cause immediate illness — and long-term damage 
+      your family may not connect to the water they drink every day.
+    </p>
+
+    <div class="contaminant-list">
+      <div class="contaminant">
+        <div class="contaminant-index"><span>E.COLI</span></div>
+        <div class="contaminant-body">
+          <div class="contaminant-name">Escherichia coli (E. coli)</div>
+          <p><strong>The primary threat.</strong> E. coli is fecal bacteria — it enters your water supply when human or animal waste contaminates boreholes, wells, and poorly sealed water tanks. In healthy adults it causes severe diarrhea and vomiting. In children under 5 and the elderly, <strong>it can cause kidney failure and death.</strong> Antibiotic-resistant strains are now documented in Nigerian water sources — meaning standard treatment no longer works.</p>
+        </div>
+      </div>
+
+      <div class="contaminant">
+        <div class="contaminant-index"><span>RUST</span></div>
+        <div class="contaminant-body">
+          <div class="contaminant-name">Iron Rust & Heavy Metals</div>
+          <p>Nigeria's aging pipe infrastructure — in Lagos, Abuja, and Port Harcourt — is corroding from the inside. <strong>Every time water flows through a rusted pipe it carries iron particles, lead, and manganese directly into your glass.</strong> Long-term heavy metal exposure causes neurological damage in children, hypertension, and kidney disease. You see it as orange or brown discolouration. You do not see the lead.</p>
+        </div>
+      </div>
+
+      <div class="contaminant">
+        <div class="contaminant-index"><span>CHLR</span></div>
+        <div class="contaminant-body">
+          <div class="contaminant-name">Excess Chlorine & Chemical Residues</div>
+          <p>Municipal water treatment in Nigeria uses chlorine to kill bacteria — but the amounts applied are inconsistent and often <strong>far exceed safe consumption levels.</strong> Excess chlorine reacts with organic matter in pipes to form trihalomethanes — compounds linked to liver damage, kidney problems, and increased cancer risk with long-term exposure.</p>
+        </div>
+      </div>
+
+      <div class="contaminant">
+        <div class="contaminant-index"><span>SDMT</span></div>
+        <div class="contaminant-body">
+          <div class="contaminant-name">Sediment & Suspended Particles</div>
+          <p>Sand, silt, clay, and organic debris enter Nigerian water supplies through cracked pipes, poorly maintained water towers, and seasonal flooding. <strong>What you see as cloudy or murky water is a suspension of particles</strong> that carry bacteria on their surface — each particle a vehicle delivering contamination deeper into your drinking water.</p>
+        </div>
+      </div>
+
+      <div class="contaminant">
+        <div class="contaminant-index"><span>BACT</span></div>
+        <div class="contaminant-body">
+          <div class="contaminant-name">Salmonella & Other Pathogens</div>
+          <p>Beyond E. coli, Nigerian water sources contain Salmonella typhi (typhoid fever), Vibrio cholerae (cholera), Cryptosporidium, and Giardia. <strong>These are not rare exceptions — they are consistent findings in peer-reviewed research</strong> conducted on Nigerian water sources across every major city. The stomach illness your family experiences repeatedly is not food poisoning. It is your water.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PATHWAY ── -->
+<section class="pathway">
+  <div class="pathway-inner">
+    <span class="section-eyebrow">How Contamination Reaches You</span>
+    <h2>The Journey From Ground<br>To Your Glass.</h2>
+
+    <div class="pathway-steps">
+      <div class="pathway-step">
+        <div class="step-icon">🌧️</div>
+        <h3>Rainy Season</h3>
+        <p>Surface runoff carries fecal matter into boreholes and shallow wells. Contamination triples during April–October.</p>
+      </div>
+      <div class="pathway-step">
+        <div class="step-icon">💧</div>
+        <h3>Underground</h3>
+        <p>E. coli survives in groundwater for months. It has no colour. No smell. No taste. It is invisible.</p>
+      </div>
+      <div class="pathway-step">
+        <div class="step-icon">🔧</div>
+        <h3>Rusted Pipes</h3>
+        <p>Water travels through infrastructure not replaced since the 1980s, picking up rust, lead, and heavy metals.</p>
+      </div>
+      <div class="pathway-step">
+        <div class="step-icon">🚰</div>
+        <h3>Your Tap</h3>
+        <p>Contaminated water arrives at your tap — and without a filter, directly into your cooking pot and drinking glass.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOURCES ── -->
+<section class="sources">
+  <div class="sources-inner">
+    <span class="section-eyebrow">No Water Source Is Safe — Without Filtration</span>
+    <h2>You Switched To Pure Water.<br>You Are Still Not Safe.</h2>
+    <p class="sources-intro">
+      Most Nigerian families believe they solved the water problem when they switched from tap water 
+      to sachet or bottled water. The research says otherwise. Every commonly trusted water source 
+      in Nigeria carries documented contamination risk.
+    </p>
+
+    <div class="source-cards">
+      <div class="source-card danger">
+        <div class="source-card-header">
+          <span class="source-icon">🚰</span>
+          <div>
+            <h3>Tap / Pipe Water</h3>
+            <div class="verdict">⚠️ Contaminated</div>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <p>Municipal pipe infrastructure across Lagos, Abuja and Port Harcourt is aging and cracked. Water picks up rust, lead, and bacteria before reaching your tap. Treatment is inconsistent.</p>
+          <div class="finding">E. coli detected in 100% of municipal water samples tested in Lagos residential areas.</div>
+        </div>
+      </div>
+
+      <div class="source-card danger">
+        <div class="source-card-header">
+          <span class="source-icon">🌊</span>
+          <div>
+            <h3>Borehole Water</h3>
+            <div class="verdict">⚠️ Highly Contaminated</div>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <p>Boreholes are vulnerable to surface contamination — particularly during rainy season when runoff floods the surrounding soil. Most residential boreholes are not tested regularly.</p>
+          <div class="finding">University of Ibadan research: 100% of borehole samples contained fecal indicator organisms.</div>
+        </div>
+      </div>
+
+      <div class="source-card danger">
+        <div class="source-card-header">
+          <span class="source-icon">💧</span>
+          <div>
+            <h3>Sachet "Pure Water"</h3>
+            <div class="verdict">⚠️ Frequently Contaminated</div>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <p>Sachet water production in Nigeria varies enormously in quality. Many small-scale producers operate without adequate sterilisation equipment. Even reputable brands show inconsistent results.</p>
+          <div class="finding">87% of sachet water samples tested positive for E. coli or Salmonella in peer-reviewed study.</div>
+        </div>
+      </div>
+
+      <div class="source-card danger">
+        <div class="source-card-header">
+          <span class="source-icon">🍳</span>
+          <div>
+            <h3>Cooking Water</h3>
+            <div class="verdict">⚠️ Often Overlooked</div>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <p>Most Nigerian families filter their drinking water but cook with unfiltered tap or borehole water. Boiling kills bacteria but does not remove heavy metals, rust, or chemical residues.</p>
+          <div class="finding">Heavy metals and chemical contaminants concentrate in food cooked with contaminated water — they do not boil away.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SYMPTOMS ── -->
+<section class="symptoms">
+  <div class="symptoms-inner">
+    <span class="section-eyebrow">Recognise These?</span>
+    <h2>Symptoms Your Family<br>May Already Have.</h2>
+    <p class="symptoms-intro">
+      Waterborne illness in Nigeria is dramatically under-diagnosed because the symptoms 
+      are common — and most families attribute them to food, not water. If your household 
+      experiences any of these regularly, your water is the most likely cause.
+    </p>
+
+    <div class="symptom-grid">
+      <div class="symptom-item">
+        <span class="symptom-icon">🤢</span>
+        <div>
+          <h4>Recurring Diarrhea</h4>
+          <p>Especially in children. The most direct symptom of E. coli and Salmonella ingestion.</p>
+        </div>
+      </div>
+      <div class="symptom-item">
+        <span class="symptom-icon">🤮</span>
+        <div>
+          <h4>Nausea & Vomiting</h4>
+          <p>Mistaken for food poisoning repeatedly. If it keeps happening, the water is the source.</p>
+        </div>
+      </div>
+      <div class="symptom-item">
+        <span class="symptom-icon">😫</span>
+        <div>
+          <h4>Constant Fatigue</h4>
+          <p>Chronic low-level contamination suppresses the immune system, leaving the body perpetually exhausted.</p>
+        </div>
+      </div>
+      <div class="symptom-item">
+        <span class="symptom-icon">🤕</span>
+        <div>
+          <h4>Frequent Headaches</h4>
+          <p>Heavy metal contamination — particularly lead and manganese — causes persistent headaches and cognitive fog.</p>
+        </div>
+      </div>
+      <div class="symptom-item">
+        <span class="symptom-icon">🔥</span>
+        <div>
+          <h4>Stomach Cramps</h4>
+          <p>Abdominal pain after drinking water or eating is a classic sign of bacterial contamination.</p>
+        </div>
+      </div>
+      <div class="symptom-item">
+        <span class="symptom-icon">🧠</span>
+        <div>
+          <h4>Children's Development</h4>
+          <p>Lead in drinking water directly impairs cognitive development in children under 6. Effects are permanent.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="symptom-callout">
+      <h3>The children in your house are the most vulnerable.</h3>
+      <p>Their immune systems cannot fight the bacteria the way adults can. What causes a stomach ache in you can cause kidney failure in a child under 5. E. coli haemolytic uraemic syndrome — a life-threatening complication — disproportionately kills Nigerian children. This is not a scare tactic. It is documented medical reality.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRODUCT ── -->
+<section class="product">
+  <div class="product-inner">
+    <span class="section-eyebrow">The Solution — OmiWater Faucet Filter</span>
+    <h2>Clean Water From<br><em>Your Own Tap.</em><br>From Today.</h2>
+    <p class="product-lead">
+      OmiWater's dual-ceramic composite faucet filter attaches to any standard Nigerian 
+      tap in under 60 seconds. No plumber. No tank. No electricity. Just clean, filtered 
+      water every time you turn your tap — for your family, your cooking, your drinking.
+    </p>
+
+    <div class="product-layout">
+      <div class="product-visual">
+        <span class="product-emoji">🚰</span>
+        <h3>OmiWater Filter</h3>
+        <p>Dual Ceramic Composite System</p>
+        <div class="product-badge">CE Certified — International Safety Standard</div>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Dual-Stage Ceramic Filtration</h4>
+            <p>Two ceramic composite cartridges working in sequence — the first removes sediment and rust particles, the second targets chemical residues and microscopic contaminants. Double the protection of standard single-stage filters.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Removes Rust, Sediment & Heavy Metals</h4>
+            <p>The ceramic composite media physically traps iron particles, rust, sand, and suspended sediment before they reach your glass. Your water runs clear from the first use.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Reduces Chlorine & Chemical Residues</h4>
+            <p>Activated carbon media absorbs excess chlorine, trihalomethanes, and organic chemical compounds — removing the bleach taste and odour that signals chemical contamination.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Universal Fit — Every Nigerian Tap</h4>
+            <p>Engineered to fit standard Nigerian kitchen and bathroom taps. No special tools. No plumber required. Install it yourself in 60 seconds and your protection starts immediately.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>CE Certified — European Safety Standard</h4>
+            <p>OmiWater meets the European Union's CE safety certification — a rigorous international standard for filtration performance and material safety. Not a cheap market product. A certified health solution.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Replaceable Cartridges — Long-Term Protection</h4>
+            <p>The filter housing lasts for years. Replace only the ceramic cartridges every 3–6 months depending on your water quality. Replacement cartridges available on order — your protection continues indefinitely.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how">
+  <div class="how-inner">
+    <span class="section-eyebrow">Installation & How It Works</span>
+    <h2>From Box to Clean Water<br>In 60 Seconds.</h2>
+
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <div>
+          <h3>Remove Your Tap Aerator</h3>
+          <p>Unscrew the small mesh aerator at the tip of your tap by hand. No tools needed. Most Nigerian kitchen and bathroom taps have a standard aerator fitting that takes 10 seconds to remove.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <div>
+          <h3>Attach OmiWater Filter</h3>
+          <p>Screw the OmiWater filter directly onto your tap in place of the aerator. It threads on by hand — no tools, no plumber, no pipe modifications. The rubber seal creates a watertight connection.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <div>
+          <h3>Turn On Your Tap</h3>
+          <p>Water flows through both ceramic cartridges — removing sediment, rust, and chemical residues — and comes out clean from the filter outlet. The switch on the side lets you alternate between filtered and unfiltered flow for washing dishes.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">4</div>
+        <div>
+          <h3>Replace Cartridges Every 3–6 Months</h3>
+          <p>When your water flow noticeably slows — the ceramic has absorbed its maximum capacity of contaminants. Unscrew the cartridges and replace them. The housing stays on your tap permanently.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MATH ── -->
+<section class="math">
+  <div class="math-inner">
+    <span class="section-eyebrow">The Financial Case — Real Numbers</span>
+    <h2>You Are Already Spending ₦120,000<br>Per Year On Water.</h2>
+
+    <div class="math-calculator">
+      <div class="calc-row">
+        <div class="calc-label">
+          Monthly sachet water spend
+          <span>Average Lagos household — 2 to 4 packs per week</span>
+        </div>
+        <div class="calc-value">₦8,000/mo</div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">
+          Monthly water tanker / dispenser refills
+          <span>Common in areas with poor pipe pressure</span>
+        </div>
+        <div class="calc-value">₦4,000/mo</div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">
+          Medical bills from waterborne illness
+          <span>Conservative estimate — one illness per household per year</span>
+        </div>
+        <div class="calc-value">₦15,000/yr</div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">
+          Total annual water-related spending
+          <span>What you spend every year — without a filter</span>
+        </div>
+        <div class="calc-value">₦159,000/yr</div>
+      </div>
+      <div class="calc-row total">
+        <div class="calc-label">
+          OmiWater Filter — Total First Year Cost
+          <span>Filter + cartridge replacement at 6 months</span>
+        </div>
+        <div class="calc-value">₦22,000</div>
+      </div>
+    </div>
+
+    <p class="math-verdict">
+      You spend ₦159,000 per year on water that still makes your family sick.<br>
+      OmiWater costs <strong>₦17,500 once.</strong><br>
+      It pays for itself in <strong>5 weeks.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <span class="section-eyebrow">Real Nigerian Families</span>
+    <h2>What Happens When<br>You Make the Switch.</h2>
+
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p>"My children had stomach problems every month. I thought it was something they were eating at school. After installing OmiWater on our kitchen tap, three months passed without a single stomach complaint. I wish I had done this years ago."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩</div>
+          <div>
+            <div class="author-name">Mama Chidinma</div>
+            <div class="author-location">Surulere, Lagos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p>"Our borehole water was always slightly brown. We had been ignoring it because we couldn't afford a big filtration system. OmiWater solved it for ₦17,500. The water runs clear now. My wife stopped buying pure water completely."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👨</div>
+          <div>
+            <div class="author-name">Engr. Babatunde</div>
+            <div class="author-location">Gwarinpa, Abuja</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p>"I am a nurse. I know what E. coli does to the body. When I read the research about borehole water I ordered immediately. Our filter has been on the kitchen tap for 4 months. I recommend it to every patient who comes in with stomach problems."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩‍⚕️</div>
+          <div>
+            <div class="author-name">Nurse Adaeze</div>
+            <div class="author-location">Port Harcourt GRA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <span class="section-eyebrow">Order OmiWater Today</span>
+    <h2>Choose Your Protection.<br>Delivered To Your Door.</h2>
+
+    <div class="pricing-cards">
+      <a href="#order" class="pricing-card">
+        <div class="pack-label">Single Unit</div>
+        <div class="pack-price">₦17,500</div>
+        <div class="pack-per">1 filter unit</div>
+        <div class="pack-save">Kitchen tap protection</div>
+      </a>
+
+      <a href="#order" class="pricing-card featured">
+        <div class="pack-label">Family Pack</div>
+        <div class="pack-price">₦32,000</div>
+        <div class="pack-per">2 filter units</div>
+        <div class="pack-save">SAVE ₦3,000 — Kitchen + Bathroom</div>
+      </a>
+
+      <a href="#order" class="pricing-card">
+        <div class="pack-label">Full Home</div>
+        <div class="pack-price">₦45,000</div>
+        <div class="pack-per">3 filter units</div>
+        <div class="pack-save">SAVE ₦7,500 — All taps covered</div>
+      </a>
+    </div>
+
+    <div class="pricing-guarantee">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>30-day satisfaction guarantee. If your water is not visibly cleaner within 30 days — full refund. No questions.</span>
+    </div>
+
+    <div class="pricing-cta">
+      <a href="https://wa.me/YOURNUMBER?text=I want to order OmiWater" class="btn-large" id="order">
+        Order on WhatsApp — Pay on Delivery →
+      </a>
+
+      <div class="trust-row">
+        <div class="trust-item"><span>🚚</span> Delivered Lagos & Abuja</div>
+        <div class="trust-item"><span>💳</span> Pay on delivery</div>
+        <div class="trust-item"><span>🔄</span> 30-day guarantee</div>
+        <div class="trust-item"><span>📞</span> WhatsApp support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq">
+  <div class="faq-inner">
+    <span class="section-eyebrow">Common Questions</span>
+    <h2>Questions Answered.</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Will this fit my tap?</div>
+      <div class="faq-a">OmiWater fits standard Nigerian kitchen and bathroom taps with a threaded aerator opening — which covers the vast majority of taps in Lagos, Abuja, and Port Harcourt homes. If you are unsure, send us a photo of your tap on WhatsApp before ordering and we will confirm compatibility.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does it remove E. coli completely?</div>
+      <div class="faq-a">OmiWater's dual ceramic composite filtration significantly reduces bacterial contamination including E. coli and other pathogenic organisms. The ceramic composite media physically traps micro-organisms above 0.1 microns. For complete household water safety, we recommend installing on all drinking and cooking taps.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does the filter last?</div>
+      <div class="faq-a">The filter housing is permanent — it stays on your tap indefinitely. The ceramic cartridges should be replaced every 3 to 6 months depending on how contaminated your water supply is. You will know it is time to replace when the water flow rate noticeably slows — the ceramic has reached its capacity. Replacement cartridges are available from us on order.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Do I need a plumber to install it?</div>
+      <div class="faq-a">No. Installation requires zero tools and no plumbing knowledge. You unscrew the existing aerator from your tap, screw on the OmiWater filter by hand, and you are done. The entire process takes under 60 seconds. We include a step-by-step picture guide with every order.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What if it does not work for me?</div>
+      <div class="faq-a">We offer a 30-day satisfaction guarantee. If your water quality does not improve visibly within 30 days of installation, contact us on WhatsApp and we will process a full refund. We are a Nigerian family business — our reputation is built on your results, not just your purchase.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use it for cooking water too?</div>
+      <div class="faq-a">Yes — and we strongly recommend it. Most Nigerian families filter their drinking water but cook with unfiltered water. Boiling kills bacteria but does not remove heavy metals, rust, or chemical residues. OmiWater on your kitchen tap protects both your drinking water and your cooking water simultaneously.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section class="final-cta">
+  <h2>Your Family Drank Contaminated Water Today.</h2>
+  <p>
+    They do not have to tomorrow. One filter. Sixty seconds to install.
+    Clean water from your own tap — forever.
+  </p>
+  <a href="https://wa.me/YOURNUMBER?text=I want to order OmiWater" class="btn-large" style="max-width:400px; background:white; color:var(--danger); display:inline-block; width:auto;">
+    Order OmiWater Now — Pay on Delivery →
+  </a>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-brand">OmiWater</span>
+  <p>Clean Water. Nigerian Homes. Delivered Fast.</p>
+  <br>
+  <p>© 2026 OmiWater Nigeria. All rights reserved.<br>
+  For orders and enquiries: WhatsApp only.<br>
+  Delivering to Lagos · Abuja · Port Harcourt</p>
+</footer>
+
+<script>
+  // Sticky nav reveal on scroll
+  const nav = document.getElementById('stickyNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('visible', window.scrollY > 300);
+  });
+
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Animate contaminant cards on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.alarm-card, .source-card, .symptom-item, .feature-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
