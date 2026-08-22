@@ -1,7 +1,8 @@
 /* ==========================================================================
-   Style Guide — gallery chrome + alternating-width card grid
+   Style Guide — gallery chrome + 5 contaminant-card variations
    Reuses the design tokens from app/landing.css (:root block). This file is
    namespaced (.sg-*) so it never collides with the landing page styles.
+   Wireframe-only: true neutral grayscale, no brand color.
    ========================================================================== */
 
 .sg-page {
@@ -119,76 +120,486 @@
 }
 
 /* ==========================================================================
-   Variation 01 — Alternating Widths
-   Three-column grid: wide cards span two columns, small cards span one.
-   Top row = wide + small; bottom row = small + wide. Light section with a
-   subtle grid background and light cards.
+   Variation 01 — Spec Sheet
+   Full-width ruled data-sheet rows. Each row is a fixed mono gutter (large
+   number + bordered abbreviation) with the name and body beside it. Rows sit
+   on hairline rules and invert a shade on hover.
    ========================================================================== */
 
-.sg-grid-bg {
+.sg-spec {
   background-color: var(--color-bg-secondary);
-  background-image:
-    linear-gradient(var(--color-gray-100) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-gray-100) 1px, transparent 1px);
-  background-size: var(--space-5) var(--space-5);
 }
 
-.sg-grid {
+.sg-spec__list {
   list-style: none;
+  margin-top: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.sg-spec__row {
   display: grid;
-  gap: var(--grid-gap);
-  margin-top: var(--space-6);
+  gap: var(--space-3) var(--space-6);
+  padding: var(--space-5) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+  transition: background-color var(--duration-fast) var(--ease-in-out);
 }
 @media (min-width: 768px) {
-  .sg-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .sg-card--wide {
-    grid-column: span 2;
+  .sg-spec__row {
+    grid-template-columns: 10rem 1fr;
+    align-items: start;
   }
 }
+.sg-spec__row:hover {
+  background-color: var(--color-gray-100);
+}
 
-.sg-card {
+.sg-spec__gutter {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
   gap: var(--space-3);
-  padding: var(--space-5);
-  background-color: var(--color-bg-primary);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-xl);
+}
+@media (min-width: 768px) {
+  .sg-spec__gutter {
+    padding-top: 0.25rem;
+  }
 }
 
-.sg-card__tag {
-  align-self: flex-start;
+.sg-spec__num {
   font-family: var(--font-family-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
   line-height: 1;
-  padding: var(--space-1) var(--space-2);
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-on-dark);
-  border-radius: var(--radius-sm);
-}
-
-.sg-card__name {
-  font-size: var(--text-xl);
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
   color: var(--color-text-primary);
 }
 
-.sg-card__desc {
+.sg-spec__abbr {
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem var(--space-2);
+  white-space: nowrap;
+}
+
+.sg-spec__name {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
+}
+
+.sg-spec__body p {
   color: var(--color-text-secondary);
   line-height: var(--leading-relaxed);
 }
-
-.sg-card__finding {
-  margin-top: auto;
-  padding-top: var(--space-3);
-  border-top: var(--border-width) solid var(--color-border);
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
+.sg-spec__body strong {
   color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* ==========================================================================
+   Variation 02 — Watermark Tiles
+   A two-column card grid. Each tile carries its abbreviation as a giant
+   ghost watermark (low-contrast mono), a dark number badge, and the name +
+   body in the foreground. Tiles lift 2px on hover.
+   ========================================================================== */
+
+.sg-tile {
+  background-color: var(--color-bg-primary);
+}
+
+.sg-tile__grid {
+  list-style: none;
+  display: grid;
+  gap: var(--grid-gap);
+  margin-top: var(--space-5);
+}
+@media (min-width: 768px) {
+  .sg-tile__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.sg-tile__card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background-color: var(--color-bg-secondary);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-fast) var(--ease-in-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+.sg-tile__card:hover {
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sg-tile__card:hover {
+    transform: none;
+  }
+}
+
+.sg-tile__wm {
+  position: absolute;
+  top: -0.12em;
+  right: var(--space-3);
+  font-family: var(--font-family-mono);
+  font-size: clamp(2.75rem, 4.5vw, 4rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  color: var(--color-gray-200);
+  pointer-events: none;
+  user-select: none;
+}
+
+.sg-tile__num {
+  position: relative;
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-on-dark);
+  background-color: var(--color-bg-dark);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem var(--space-2);
+}
+
+.sg-tile__name {
+  position: relative;
+  font-size: var(--text-xl);
+}
+
+.sg-tile__desc {
+  position: relative;
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+.sg-tile__desc strong {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* ==========================================================================
+   Variation 03 — Dossier Timeline
+   A vertical case-file timeline: large mono index numbers on a left rail
+   joined by a hairline, with each body indented to the right beneath a mono
+   abbreviation tag.
+   ========================================================================== */
+
+.sg-doss {
+  background-color: var(--color-bg-secondary);
+}
+
+.sg-doss__list {
+  list-style: none;
+  position: relative;
+  margin-top: var(--space-4);
+}
+.sg-doss__list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--space-6) / 2);
+  width: var(--border-width);
+  background-color: var(--color-gray-300);
+}
+
+.sg-doss__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--space-6) 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  padding-bottom: var(--space-5);
+}
+
+.sg-doss__num {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  border: var(--border-width) solid var(--color-gray-400);
+  background-color: var(--color-bg-secondary);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-primary);
+}
+
+.sg-doss__body {
+  padding-top: 0.125rem;
+}
+
+.sg-doss__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.sg-doss__abbr {
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.125rem var(--space-2);
+}
+
+.sg-doss__name {
+  font-size: var(--text-xl);
+}
+
+.sg-doss__body p {
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+.sg-doss__body strong {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* ==========================================================================
+   Variation 04 — Lab Report
+   A ruled laboratory table with mono column headers (No. / Contaminant /
+   What it does). One row inverts to dark as the highlight. On small screens
+   the header row is visually hidden (kept for screen readers) and rows stack.
+   ========================================================================== */
+
+.sg-lab {
+  background-color: var(--color-bg-primary);
+}
+
+.sg-lab__table {
+  margin-top: var(--space-4);
+  border-top: 2px solid var(--color-gray-900);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.sg-lab__thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (min-width: 768px) {
+  .sg-lab__thead {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    display: grid;
+    grid-template-columns: 6rem 1fr 1.6fr;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid var(--color-gray-900);
+    background-color: var(--color-bg-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+}
+
+.sg-lab__row {
+  display: grid;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-4) var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-border);
+  transition: background-color var(--duration-fast) var(--ease-in-out);
+}
+.sg-lab__row:last-child {
+  border-bottom: 0;
+}
+@media (min-width: 768px) {
+  .sg-lab__row {
+    grid-template-columns: 6rem 1fr 1.6fr;
+    gap: var(--space-4);
+    align-items: start;
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+.sg-lab__num {
+  font-family: var(--font-family-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.sg-lab__abbr {
+  display: inline-block;
+  margin-left: var(--space-2);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.125rem var(--space-1);
+}
+
+.sg-lab__name {
+  font-size: var(--text-xl);
+}
+
+.sg-lab__desc {
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+.sg-lab__desc strong {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* Highlighted row — inverts to a dark band */
+.sg-lab__row.is-highlighted {
+  background-color: var(--color-bg-dark);
+}
+.sg-lab__row.is-highlighted .sg-lab__num {
+  color: var(--color-text-on-dark);
+}
+.sg-lab__row.is-highlighted .sg-lab__abbr {
+  color: var(--color-text-on-dark-muted);
+  border-color: var(--color-gray-600);
+}
+.sg-lab__row.is-highlighted .sg-lab__name {
+  color: var(--color-text-on-dark);
+}
+.sg-lab__row.is-highlighted .sg-lab__desc {
+  color: var(--color-text-on-dark-muted);
+}
+.sg-lab__row.is-highlighted .sg-lab__desc strong {
+  color: var(--color-text-on-dark);
+}
+
+/* ==========================================================================
+   Variation 05 — Hazard Placards
+   A full-bleed dark band. Each contaminant is a warning placard: a square
+   warning-glyph chip, a mono index, and the abbreviation in a bordered mono
+   badge beside the name.
+   ========================================================================== */
+
+.sg-haz {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-on-dark);
+}
+.sg-haz .section-eyebrow {
+  color: var(--color-text-on-dark-muted);
+}
+.sg-haz .section__title {
+  color: var(--color-text-on-dark);
+}
+.sg-haz .section__lead {
+  color: var(--color-text-on-dark-muted);
+}
+
+.sg-haz__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.sg-haz__placard {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--color-gray-800);
+  border: var(--border-width) solid var(--color-gray-700);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-in-out);
+}
+.sg-haz__placard:hover {
+  border-color: var(--color-gray-500);
+}
+
+.sg-haz__icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-gray-900);
+  border: var(--border-width) solid var(--color-gray-600);
+  color: var(--color-text-on-dark);
+}
+
+.sg-haz__num {
+  padding-top: 0.125rem;
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-on-dark-muted);
+}
+
+.sg-haz__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.sg-haz__name {
+  font-size: var(--text-xl);
+  color: var(--color-text-on-dark);
+}
+
+.sg-haz__badge {
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-on-dark-muted);
+  border: var(--border-width) solid var(--color-gray-600);
+  border-radius: var(--radius-sm);
+  padding: 0.125rem var(--space-2);
+}
+
+.sg-haz__body p {
+  color: var(--color-text-on-dark-muted);
+  line-height: var(--leading-relaxed);
+}
+.sg-haz__body strong {
+  color: var(--color-text-on-dark);
+  font-weight: var(--weight-semibold);
 }

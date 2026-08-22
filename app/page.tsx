@@ -428,104 +428,89 @@ export default function Home() {
               water they drink every day.
             </p>
 
-            <ol className="contaminant-list" role="list">
-              <li className="contaminant" data-animate>
-                <div className="contaminant__index">
-                  01<span>E.COLI</span>
-                </div>
-                <div className="contaminant__body">
-                  <h3 className="contaminant__name">Escherichia coli (E. coli)</h3>
-                  <p>
-                    <strong>The primary threat.</strong> E. coli is fecal
-                    bacteria — it enters your water supply when human or animal
-                    waste contaminates boreholes, wells, and poorly sealed water
-                    tanks. In healthy adults it causes severe diarrhea and
-                    vomiting. In children under 5 and the elderly,{" "}
-                    <strong>it can cause kidney failure and death.</strong>{" "}
-                    Antibiotic-resistant strains are now documented in Nigerian
-                    water sources — meaning standard treatment no longer works.
-                  </p>
-                </div>
+            <ol className="contaminant-tiles" role="list" aria-label="Contaminant tiles">
+              <li className="contaminant-tile" data-animate>
+                <span className="contaminant-tile__wm" aria-hidden="true">E.COLI</span>
+                <span className="contaminant-tile__num" aria-hidden="true">01</span>
+                <h3 className="contaminant-tile__name">Escherichia coli (E. coli)</h3>
+                <p className="contaminant-tile__desc">
+                  <strong>The primary threat.</strong> E. coli is fecal
+                  bacteria — it enters your water supply when human or animal
+                  waste contaminates boreholes, wells, and poorly sealed water
+                  tanks. In healthy adults it causes severe diarrhea and
+                  vomiting. In children under 5 and the elderly,{" "}
+                  <strong>it can cause kidney failure and death.</strong>{" "}
+                  Antibiotic-resistant strains are now documented in Nigerian
+                  water sources — meaning standard treatment no longer works.
+                </p>
               </li>
 
-              <li className="contaminant" data-animate>
-                <div className="contaminant__index">
-                  02<span>RUST</span>
-                </div>
-                <div className="contaminant__body">
-                  <h3 className="contaminant__name">Iron Rust & Heavy Metals</h3>
-                  <p>
-                    Nigeria&apos;s aging pipe infrastructure — in Lagos, Abuja,
-                    and Port Harcourt — is corroding from the inside.{" "}
-                    <strong>
-                      Every time water flows through a rusted pipe it carries
-                      iron particles, lead, and manganese directly into your
-                      glass.
-                    </strong>{" "}
-                    Long-term heavy metal exposure causes neurological damage in
-                    children, hypertension, and kidney disease. You see it as
-                    orange or brown discolouration. You do not see the lead.
-                  </p>
-                </div>
+              <li className="contaminant-tile" data-animate>
+                <span className="contaminant-tile__wm" aria-hidden="true">RUST</span>
+                <span className="contaminant-tile__num" aria-hidden="true">02</span>
+                <h3 className="contaminant-tile__name">Iron Rust &amp; Heavy Metals</h3>
+                <p className="contaminant-tile__desc">
+                  Nigeria&apos;s aging pipe infrastructure — in Lagos, Abuja,
+                  and Port Harcourt — is corroding from the inside.{" "}
+                  <strong>
+                    Every time water flows through a rusted pipe it carries
+                    iron particles, lead, and manganese directly into your
+                    glass.
+                  </strong>{" "}
+                  Long-term heavy metal exposure causes neurological damage in
+                  children, hypertension, and kidney disease. You see it as
+                  orange or brown discolouration. You do not see the lead.
+                </p>
               </li>
 
-              <li className="contaminant" data-animate>
-                <div className="contaminant__index">
-                  03<span>CHLR</span>
-                </div>
-                <div className="contaminant__body">
-                  <h3 className="contaminant__name">Excess Chlorine & Chemical Residues</h3>
-                  <p>
-                    Municipal water treatment in Nigeria uses chlorine to kill
-                    bacteria — but the amounts applied are inconsistent and
-                    often <strong>far exceed safe consumption levels.</strong>{" "}
-                    Excess chlorine reacts with organic matter in pipes to form
-                    trihalomethanes — compounds linked to liver damage, kidney
-                    problems, and increased cancer risk with long-term exposure.
-                  </p>
-                </div>
+              <li className="contaminant-tile" data-animate>
+                <span className="contaminant-tile__wm" aria-hidden="true">CHLR</span>
+                <span className="contaminant-tile__num" aria-hidden="true">03</span>
+                <h3 className="contaminant-tile__name">Excess Chlorine &amp; Chemical Residues</h3>
+                <p className="contaminant-tile__desc">
+                  Municipal water treatment in Nigeria uses chlorine to kill
+                  bacteria — but the amounts applied are inconsistent and
+                  often <strong>far exceed safe consumption levels.</strong>{" "}
+                  Excess chlorine reacts with organic matter in pipes to form
+                  trihalomethanes — compounds linked to liver damage, kidney
+                  problems, and increased cancer risk with long-term exposure.
+                </p>
               </li>
 
-              <li className="contaminant" data-animate>
-                <div className="contaminant__index">
-                  04<span>SDMT</span>
-                </div>
-                <div className="contaminant__body">
-                  <h3 className="contaminant__name">Sediment & Suspended Particles</h3>
-                  <p>
-                    Sand, silt, clay, and organic debris enter Nigerian water
-                    supplies through cracked pipes, poorly maintained water
-                    towers, and seasonal flooding.{" "}
-                    <strong>
-                      What you see as cloudy or murky water is a suspension of
-                      particles
-                    </strong>{" "}
-                    that carry bacteria on their surface — each particle a
-                    vehicle delivering contamination deeper into your drinking
-                    water.
-                  </p>
-                </div>
+              <li className="contaminant-tile" data-animate>
+                <span className="contaminant-tile__wm" aria-hidden="true">SDMT</span>
+                <span className="contaminant-tile__num" aria-hidden="true">04</span>
+                <h3 className="contaminant-tile__name">Sediment &amp; Suspended Particles</h3>
+                <p className="contaminant-tile__desc">
+                  Sand, silt, clay, and organic debris enter Nigerian water
+                  supplies through cracked pipes, poorly maintained water
+                  towers, and seasonal flooding.{" "}
+                  <strong>
+                    What you see as cloudy or murky water is a suspension of
+                    particles
+                  </strong>{" "}
+                  that carry bacteria on their surface — each particle a
+                  vehicle delivering contamination deeper into your drinking
+                  water.
+                </p>
               </li>
 
-              <li className="contaminant" data-animate>
-                <div className="contaminant__index">
-                  05<span>BACT</span>
-                </div>
-                <div className="contaminant__body">
-                  <h3 className="contaminant__name">Salmonella & Other Pathogens</h3>
-                  <p>
-                    Beyond E. coli, Nigerian water sources contain Salmonella
-                    typhi (typhoid fever), Vibrio cholerae (cholera),
-                    Cryptosporidium, and Giardia.{" "}
-                    <strong>
-                      These are not rare exceptions — they are consistent
-                      findings in peer-reviewed research
-                    </strong>{" "}
-                    conducted on Nigerian water sources across every major city.
-                    The stomach illness your family experiences repeatedly is
-                    not food poisoning. It is your water.
-                  </p>
-                </div>
+              <li className="contaminant-tile" data-animate>
+                <span className="contaminant-tile__wm" aria-hidden="true">BACT</span>
+                <span className="contaminant-tile__num" aria-hidden="true">05</span>
+                <h3 className="contaminant-tile__name">Salmonella &amp; Other Pathogens</h3>
+                <p className="contaminant-tile__desc">
+                  Beyond E. coli, Nigerian water sources contain Salmonella
+                  typhi (typhoid fever), Vibrio cholerae (cholera),
+                  Cryptosporidium, and Giardia.{" "}
+                  <strong>
+                    These are not rare exceptions — they are consistent
+                    findings in peer-reviewed research
+                  </strong>{" "}
+                  conducted on Nigerian water sources across every major city.
+                  The stomach illness your family experiences repeatedly is
+                  not food poisoning. It is your water.
+                </p>
               </li>
             </ol>
           </div>
@@ -684,56 +669,102 @@ export default function Home() {
               regularly, your water is the most likely cause.
             </p>
 
-            <div className="grid-3 symptoms__grid">
-              <div className="symptom" data-animate data-animate-delay="0">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Recurring Diarrhea</h3>
-                <p>
-                  Especially in children. The most direct symptom of E. coli and
-                  Salmonella ingestion.
-                </p>
-              </div>
-              <div className="symptom" data-animate data-animate-delay="1">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Nausea & Vomiting</h3>
-                <p>
-                  Mistaken for food poisoning repeatedly. If it keeps happening,
-                  the water is the source.
-                </p>
-              </div>
-              <div className="symptom" data-animate data-animate-delay="2">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Constant Fatigue</h3>
-                <p>
-                  Chronic low-level contamination suppresses the immune system,
-                  leaving the body perpetually exhausted.
-                </p>
-              </div>
-              <div className="symptom" data-animate data-animate-delay="3">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Frequent Headaches</h3>
-                <p>
-                  Heavy metal contamination — particularly lead and manganese —
-                  causes persistent headaches and cognitive fog.
-                </p>
-              </div>
-              <div className="symptom" data-animate data-animate-delay="4">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Stomach Cramps</h3>
-                <p>
-                  Abdominal pain after drinking water or eating is a classic
-                  sign of bacterial contamination.
-                </p>
-              </div>
-              <div className="symptom" data-animate data-animate-delay="5">
-                <span className="symptom__icon" aria-hidden="true"></span>
-                <h3 className="symptom__name">Children&apos;s Development</h3>
-                <p>
-                  Lead in drinking water directly impairs cognitive development
-                  in children under 6. Effects are permanent.
-                </p>
-              </div>
-            </div>
+            <ul
+              className="symptoms-ramp__list"
+              role="list"
+              aria-label="Symptoms as severity ramps"
+            >
+              <li className="symptom-row" data-animate data-animate-delay="0">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "100%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Recurring Diarrhea</h3>
+                    <span className="symptom-row__count">4/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Especially in children. The most direct symptom of E. coli
+                    and Salmonella ingestion.
+                  </p>
+                </div>
+              </li>
+              <li className="symptom-row" data-animate data-animate-delay="1">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "50%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Nausea &amp; Vomiting</h3>
+                    <span className="symptom-row__count">2/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Mistaken for food poisoning repeatedly. If it keeps
+                    happening, the water is the source.
+                  </p>
+                </div>
+              </li>
+              <li className="symptom-row" data-animate data-animate-delay="2">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "50%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Constant Fatigue</h3>
+                    <span className="symptom-row__count">2/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Chronic low-level contamination suppresses the immune
+                    system, leaving the body perpetually exhausted.
+                  </p>
+                </div>
+              </li>
+              <li className="symptom-row" data-animate data-animate-delay="3">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "75%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Frequent Headaches</h3>
+                    <span className="symptom-row__count">3/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Heavy metal contamination — particularly lead and manganese
+                    — causes persistent headaches and cognitive fog.
+                  </p>
+                </div>
+              </li>
+              <li className="symptom-row" data-animate data-animate-delay="4">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "75%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Stomach Cramps</h3>
+                    <span className="symptom-row__count">3/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Abdominal pain after drinking water or eating is a classic
+                    sign of bacterial contamination.
+                  </p>
+                </div>
+              </li>
+              <li className="symptom-row" data-animate data-animate-delay="5">
+                <span className="symptom-row__ramp" aria-hidden="true">
+                  <span className="symptom-row__fill" style={{ height: "100%" }} />
+                </span>
+                <div className="symptom-row__body">
+                  <div className="symptom-row__head">
+                    <h3 className="symptom-row__name">Children&apos;s Development</h3>
+                    <span className="symptom-row__count">4/4</span>
+                  </div>
+                  <p className="symptom-row__desc">
+                    Lead in drinking water directly impairs cognitive
+                    development in children under 6. Effects are permanent.
+                  </p>
+                </div>
+              </li>
+            </ul>
 
             <div className="symptom-callout" data-animate>
               <h3>The children in your house are the most vulnerable.</h3>
@@ -1076,7 +1107,7 @@ export default function Home() {
 
         {/* ============ 13. FAQ ============ */}
         <section className="section faq" id="faq" aria-label="Frequently asked questions">
-          <div className="container container--narrow">
+          <div className="container">
             <span className="section-eyebrow">Common Questions</span>
             <h2 className="section__title">Questions Answered.</h2>
 
@@ -1088,8 +1119,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-1"
                 >
+                  <span className="faq__num" aria-hidden="true">01</span>
                   <h3 className="faq__q">Will this fit my tap?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-1" data-accordion-content>
                   <div className="faq__a">
@@ -1111,8 +1150,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-2"
                 >
+                  <span className="faq__num" aria-hidden="true">02</span>
                   <h3 className="faq__q">Does it remove E. coli completely?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-2" data-accordion-content>
                   <div className="faq__a">
@@ -1135,8 +1182,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-3"
                 >
+                  <span className="faq__num" aria-hidden="true">03</span>
                   <h3 className="faq__q">How long does the filter last?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-3" data-accordion-content>
                   <div className="faq__a">
@@ -1160,8 +1215,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-4"
                 >
+                  <span className="faq__num" aria-hidden="true">04</span>
                   <h3 className="faq__q">Do I need a plumber to install it?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-4" data-accordion-content>
                   <div className="faq__a">
@@ -1183,8 +1246,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-5"
                 >
+                  <span className="faq__num" aria-hidden="true">05</span>
                   <h3 className="faq__q">What if it does not work for me?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-5" data-accordion-content>
                   <div className="faq__a">
@@ -1207,8 +1278,16 @@ export default function Home() {
                   aria-expanded="false"
                   aria-controls="faq-6"
                 >
+                  <span className="faq__num" aria-hidden="true">06</span>
                   <h3 className="faq__q">Can I use it for cooking water too?</h3>
-                  <span className="faq__icon" aria-hidden="true"></span>
+                  <span className="faq__ind" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
+                      <path d="M5 12h14" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>
+                  </span>
                 </button>
                 <div className="faq__content" id="faq-6" data-accordion-content>
                   <div className="faq__a">
