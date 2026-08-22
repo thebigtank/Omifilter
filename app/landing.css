@@ -836,7 +836,7 @@ a:not([class]) {
 
 .contaminant-tile__wm {
   position: absolute;
-  top: -0.12em;
+  top: var(--space-4);
   right: var(--space-3);
   font-family: var(--font-family-mono);
   font-size: clamp(2.75rem, 4.5vw, 4rem);
@@ -1318,73 +1318,215 @@ a:not([class]) {
   color: var(--color-text-secondary);
 }
 
-.pricing__grid {
+/* ── Membership pricing fan (order modal) ────────────────────────
+   Fanned credit-card-ratio tiers: "TIER 01 / 02 / 03" mono labels,
+   member number, barcode strip, price, and a punched-benefits row.
+   The featured Family Pack is the dark premium card, raised and pulled
+   forward; clicking any card brings it to the front (`.is-front`). */
+
+.membership {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   margin-top: var(--space-5);
+  padding: var(--space-5) var(--space-2) var(--space-4);
 }
 
-.pricing-card {
+.membership-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-5);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-lg);
+  width: 13rem;
+  aspect-ratio: 1.6;
+  padding: var(--space-3) var(--space-4);
   background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   color: inherit;
-  text-decoration: none;
   text-align: left;
-  width: 100%;
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  transition: transform var(--duration-normal) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out);
 }
-.pricing-card:hover {
-  transform: translateY(-2px);
+.membership-card:hover {
   box-shadow: var(--shadow-lg);
 }
-@media (prefers-reduced-motion: reduce) {
-  .pricing-card:hover {
-    transform: none;
-  }
+.membership-card:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
-.pricing-card--featured {
-  background-color: var(--color-bg-dark);
+.membership-card--left {
+  transform: rotate(-4deg);
+  margin-right: -1.25rem;
+  z-index: 1;
+}
+.membership-card--right {
+  transform: rotate(4deg);
+  margin-left: -1.25rem;
+  z-index: 1;
+}
+
+/* Premium tier identity (dark card) — independent of fan position.
+   No box-shadow here: the elevated shadow belongs only to `.is-front`. */
+.membership-card--featured {
+  background-color: var(--color-gray-900);
+  border-color: var(--color-gray-900);
   color: var(--color-text-on-dark);
-  border-color: var(--color-bg-dark);
-  box-shadow: var(--shadow-lg);
 }
 
-.pricing-card__label {
+/* When the featured card is NOT the front card, it must read as a "back"
+   card: pushed down, gently scaled back, and on the same z-index as the
+   other resting cards. The dark identity and "Most Popular" tab stay. */
+.membership-card--featured:not(.is-front) {
+  transform: translateY(0.5rem) scale(0.97);
+  z-index: 2;
+}
+
+/* The card at the front of the fan (default: the featured Family Pack) */
+.membership-card.is-front {
+  transform: translateY(-0.75rem) scale(1.07);
+  box-shadow: var(--shadow-xl);
+  z-index: 3;
+}
+.membership-card.is-front:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.membership-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   font-family: var(--font-family-mono);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
+  font-size: var(--text-2xs);
   letter-spacing: var(--tracking-wide);
-  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
-
-.pricing-card__price {
-  font-size: var(--text-3xl);
+.membership-card__tier {
   font-weight: var(--weight-bold);
 }
 
-.pricing-card__per {
-  font-size: var(--text-sm);
+.membership-card__barcode {
+  display: block;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+  height: 0.9rem;
+  opacity: 0.75;
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 2px,
+    transparent 2px 4px,
+    currentColor 4px 6px,
+    transparent 6px 8px,
+    currentColor 8px 12px,
+    transparent 12px 14px
+  );
+}
+
+.membership-card__name {
+  display: block;
+  margin-top: auto;
+  font-size: var(--text-lg);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+}
+.membership-card__price {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+}
+.membership-card__units {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-xs);
   color: var(--color-text-secondary);
 }
-
-.pricing-card__save {
-  margin-top: var(--space-2);
-  font-size: var(--text-sm);
+.membership-card__save {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
   font-weight: var(--weight-medium);
-  color: var(--color-text-primary);
 }
 
-.pricing-card--featured .pricing-card__label,
-.pricing-card--featured .pricing-card__per {
+.membership-card__punch {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-gray-300);
+}
+.membership-card__hole {
+  display: block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-gray-400);
+}
+.membership-card__hole--on {
+  background-color: var(--color-gray-900);
+  border-color: var(--color-gray-900);
+}
+
+.membership-card--featured .membership-card__row {
   color: var(--color-text-on-dark-muted);
 }
-
-.pricing-card--featured .pricing-card__save {
+.membership-card--featured .membership-card__units {
+  color: var(--color-text-on-dark-muted);
+}
+.membership-card--featured .membership-card__save {
   color: var(--color-text-on-dark);
+}
+.membership-card--featured .membership-card__punch {
+  border-top-color: var(--color-gray-700);
+}
+.membership-card--featured .membership-card__hole {
+  border-color: var(--color-gray-400);
+}
+.membership-card--featured .membership-card__hole--on {
+  background-color: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.membership-card__tab {
+  position: absolute;
+  top: -0.8rem;
+  right: 1.25rem;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  background-color: var(--color-white);
+  color: var(--color-gray-900);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 0.4rem), 0 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .membership-card {
+    transition: none;
+  }
+  .membership-card.is-front {
+    transform: translateY(-0.5rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .membership-card {
+    width: 10.5rem;
+  }
+}
+@media (max-width: 479px) {
+  .membership-card {
+    width: 9rem;
+  }
 }
 
 .pricing__guarantee {
@@ -1626,19 +1768,6 @@ a:not([class]) {
   user-select: none;
 }
 
-.pricing-card__badge {
-  align-self: flex-start;
-  font-family: var(--font-family-mono);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-full);
-  background-color: var(--color-white);
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-1);
-}
-
 body.modal-open {
   overflow: hidden;
 }
@@ -1823,9 +1952,7 @@ body.modal-open {
 .finding-node__source,
 .pathway-step__node,
 .source-card__tag,
-.product__badge,
-.pricing-card__label,
-.pricing-card__badge {
+.product__badge {
   font-size: var(--text-2xs);
   font-weight: var(--weight-semibold);
 }

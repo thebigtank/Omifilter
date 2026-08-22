@@ -165,6 +165,30 @@ export default function Home() {
       closeTriggers.forEach((t) => t.removeEventListener("click", closeModal));
     });
 
+    // ─── Membership Cards: Bring-To-Front ──────────────────────
+    // The three pricing cards are fanned. Clicking (or Enter/Space on) any
+    // card brings it to the front of the fan by toggling `.is-front`.
+    // Cards are native <button>s, so Enter/Space dispatch a click event
+    // natively — no separate keydown handler is needed.
+    const membershipCards = document.querySelectorAll<HTMLElement>(
+      ".membership-card"
+    );
+    const onMembershipClick = (e: Event) => {
+      const card = e.currentTarget as HTMLElement;
+      if (!card.classList.contains("membership-card")) return;
+      if (card.classList.contains("is-front")) return;
+      membershipCards.forEach((c) => c.classList.remove("is-front"));
+      card.classList.add("is-front");
+    };
+    membershipCards.forEach((c) =>
+      c.addEventListener("click", onMembershipClick)
+    );
+    cleanupFns.push(() =>
+      membershipCards.forEach((c) =>
+        c.removeEventListener("click", onMembershipClick)
+      )
+    );
+
     // ─── Keyboard (Escape) ─────────────────────────────────────
     const onKeydown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
@@ -1387,27 +1411,78 @@ export default function Home() {
             Delivered To Your Door.
           </h2>
 
-          <div className="pricing__grid grid-3">
-            <button type="button" className="pricing-card">
-              <span className="pricing-card__label">Single Unit</span>
-              <span className="pricing-card__price">₦17,500</span>
-              <span className="pricing-card__per">1 filter unit</span>
-              <span className="pricing-card__save">Kitchen tap protection</span>
+          <div className="membership" aria-label="Pricing as membership cards">
+            <button
+              type="button"
+              className="membership-card membership-card--left"
+            >
+              <span className="membership-card__row">
+                <span className="membership-card__tier">Tier 01</span>
+                <span className="membership-card__no">OMW·0421</span>
+              </span>
+              <span className="membership-card__barcode" aria-hidden="true" />
+              <span className="membership-card__name">Single Unit</span>
+              <span className="membership-card__price">₦17,500</span>
+              <span className="membership-card__units">1 filter unit</span>
+              <span className="membership-card__save">Kitchen tap protection</span>
+              <span className="membership-card__punch" aria-hidden="true">
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole" />
+                <span className="membership-card__hole" />
+              </span>
             </button>
 
-            <button type="button" className="pricing-card pricing-card--featured">
-              <span className="pricing-card__badge">Most Popular</span>
-              <span className="pricing-card__label">Family Pack</span>
-              <span className="pricing-card__price">₦32,000</span>
-              <span className="pricing-card__per">2 filter units</span>
-              <span className="pricing-card__save">SAVE ₦3,000 — Kitchen + Bathroom</span>
+            <button
+              type="button"
+              className="membership-card membership-card--featured is-front"
+            >
+              <span className="membership-card__tab" aria-hidden="true">
+                Most Popular
+              </span>
+              <span className="membership-card__row">
+                <span className="membership-card__tier">Tier 02</span>
+                <span className="membership-card__no">OMW·0421</span>
+              </span>
+              <span className="membership-card__barcode" aria-hidden="true" />
+              <span className="membership-card__name">Family Pack</span>
+              <span className="membership-card__price">₦32,000</span>
+              <span className="membership-card__units">2 filter units</span>
+              <span className="membership-card__save">
+                SAVE ₦3,000 — Kitchen + Bathroom
+              </span>
+              <span className="membership-card__punch" aria-hidden="true">
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+              </span>
             </button>
 
-            <button type="button" className="pricing-card">
-              <span className="pricing-card__label">Full Home</span>
-              <span className="pricing-card__price">₦45,000</span>
-              <span className="pricing-card__per">3 filter units</span>
-              <span className="pricing-card__save">SAVE ₦7,500 — All taps covered</span>
+            <button
+              type="button"
+              className="membership-card membership-card--right"
+            >
+              <span className="membership-card__row">
+                <span className="membership-card__tier">Tier 03</span>
+                <span className="membership-card__no">OMW·0421</span>
+              </span>
+              <span className="membership-card__barcode" aria-hidden="true" />
+              <span className="membership-card__name">Full Home</span>
+              <span className="membership-card__price">₦45,000</span>
+              <span className="membership-card__units">3 filter units</span>
+              <span className="membership-card__save">
+                SAVE ₦7,500 — All taps covered
+              </span>
+              <span className="membership-card__punch" aria-hidden="true">
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+                <span className="membership-card__hole membership-card__hole--on" />
+              </span>
             </button>
           </div>
 
