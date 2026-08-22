@@ -295,7 +295,7 @@ export default function Home() {
         </section>
 
         {/* ============ 3. FINDINGS / SCIENCE ============ */}
-        <section className="section section--dark findings" id="findings" aria-label="The science">
+        <section className="section findings" id="findings" aria-label="The science">
           <div className="container">
             <span className="section-eyebrow">The Science — Peer-Reviewed Research</span>
             <h2 className="section__title">
@@ -304,44 +304,111 @@ export default function Home() {
               Found In Your Water.
             </h2>
 
-            <div className="grid-4 findings__grid">
-              <div className="finding-card" data-animate data-animate-delay="0">
-                <div className="finding-card__stat">100%</div>
-                <p className="finding-card__source">University of Ibadan — Borehole Study</p>
-                <p>
-                  Every single borehole water sample tested across Lagos
-                  residential areas contained fecal indicator bacteria. Not
-                  some. <strong>Every one.</strong>
-                </p>
-              </div>
-              <div className="finding-card" data-animate data-animate-delay="1">
-                <div className="finding-card__stat">87%</div>
-                <p className="finding-card__source">Journal of Water & Health — Sachet Study</p>
-                <p>
-                  Of sachet water samples — the &quot;pure water&quot; your
-                  children drink every day — tested positive for E. coli,
-                  Salmonella, or both.
-                </p>
-              </div>
-              <div className="finding-card" data-animate data-animate-delay="2">
-                <div className="finding-card__stat">3×</div>
-                <p className="finding-card__source">Rainy Season Research</p>
-                <p>
-                  Contamination levels in Nigerian groundwater spike three times
-                  higher during rainy season as surface runoff floods into
-                  boreholes and wells.
-                </p>
-              </div>
-              <div className="finding-card" data-animate data-animate-delay="3">
-                <div className="finding-card__stat">60M</div>
-                <p className="finding-card__source">WHO West Africa Data</p>
-                <p>
-                  Nigerians currently lack access to safe drinking water. The
-                  government system alone cannot solve this.{" "}
-                  <strong>You must protect your own home.</strong>
-                </p>
-              </div>
-            </div>
+            <ol
+              className="findings-timeline"
+              role="list"
+              aria-label="Research findings escalating in scope"
+            >
+              <li className="finding-node" data-animate data-animate-delay="0">
+                <span className="finding-node__dot" aria-hidden="true">
+                  01
+                </span>
+                <div className="finding-node__card">
+                  <div
+                    className="finding-node__level"
+                    role="img"
+                    aria-label="Severity level 1 of 4"
+                  >
+                    <span className="is-on" />
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <p className="finding-node__stat">100%</p>
+                  <p className="finding-node__source">University of Ibadan — Borehole Study</p>
+                  <p className="finding-node__desc">
+                    Every single borehole water sample tested across Lagos
+                    residential areas contained fecal indicator bacteria. Not
+                    some. <strong>Every one.</strong>
+                  </p>
+                </div>
+              </li>
+
+              <li className="finding-node" data-animate data-animate-delay="1">
+                <span className="finding-node__dot" aria-hidden="true">
+                  02
+                </span>
+                <div className="finding-node__card">
+                  <div
+                    className="finding-node__level"
+                    role="img"
+                    aria-label="Severity level 2 of 4"
+                  >
+                    <span className="is-on" />
+                    <span className="is-on" />
+                    <span />
+                    <span />
+                  </div>
+                  <p className="finding-node__stat">87%</p>
+                  <p className="finding-node__source">Journal of Water & Health — Sachet Study</p>
+                  <p className="finding-node__desc">
+                    Of sachet water samples — the &quot;pure water&quot; your
+                    children drink every day — tested positive for E. coli,
+                    Salmonella, or both.
+                  </p>
+                </div>
+              </li>
+
+              <li className="finding-node" data-animate data-animate-delay="2">
+                <span className="finding-node__dot" aria-hidden="true">
+                  03
+                </span>
+                <div className="finding-node__card">
+                  <div
+                    className="finding-node__level"
+                    role="img"
+                    aria-label="Severity level 3 of 4"
+                  >
+                    <span className="is-on" />
+                    <span className="is-on" />
+                    <span className="is-on" />
+                    <span />
+                  </div>
+                  <p className="finding-node__stat">3×</p>
+                  <p className="finding-node__source">Rainy Season Research</p>
+                  <p className="finding-node__desc">
+                    Contamination levels in Nigerian groundwater spike three times
+                    higher during rainy season as surface runoff floods into
+                    boreholes and wells.
+                  </p>
+                </div>
+              </li>
+
+              <li className="finding-node" data-animate data-animate-delay="3">
+                <span className="finding-node__dot" aria-hidden="true">
+                  04
+                </span>
+                <div className="finding-node__card">
+                  <div
+                    className="finding-node__level"
+                    role="img"
+                    aria-label="Severity level 4 of 4"
+                  >
+                    <span className="is-on" />
+                    <span className="is-on" />
+                    <span className="is-on" />
+                    <span className="is-on" />
+                  </div>
+                  <p className="finding-node__stat">60M</p>
+                  <p className="finding-node__source">WHO West Africa Data</p>
+                  <p className="finding-node__desc">
+                    Nigerians currently lack access to safe drinking water. The
+                    government system alone cannot solve this.{" "}
+                    <strong>You must protect your own home.</strong>
+                  </p>
+                </div>
+              </li>
+            </ol>
           </div>
         </section>
 
@@ -527,77 +594,77 @@ export default function Home() {
               Nigeria carries documented contamination risk.
             </p>
 
-            <div className="grid-2 sources__grid">
-              <div className="source-card" data-animate data-animate-delay="0">
-                <div className="source-card__header">
-                  <span className="source-card__icon" aria-hidden="true"></span>
-                  <h3 className="source-card__name">Tap / Pipe Water</h3>
-                  <span className="verdict">Contaminated</span>
-                </div>
-                <p>
-                  Municipal pipe infrastructure across Lagos, Abuja and Port
-                  Harcourt is aging and cracked. Water picks up rust, lead, and
-                  bacteria before reaching your tap. Treatment is inconsistent.
-                </p>
-                <p className="finding">
-                  E. coli detected in 100% of municipal water samples tested in
-                  Lagos residential areas.
-                </p>
-              </div>
-
-              <div className="source-card" data-animate data-animate-delay="1">
-                <div className="source-card__header">
-                  <span className="source-card__icon" aria-hidden="true"></span>
-                  <h3 className="source-card__name">Borehole Water</h3>
-                  <span className="verdict">Highly Contaminated</span>
-                </div>
-                <p>
+            <ol
+              className="sources-grid"
+              role="list"
+              aria-label="Water sources in an alternating-width grid"
+            >
+              <li
+                className="source-card source-card--wide"
+                data-animate
+                data-animate-delay="0"
+              >
+                <span className="source-card__tag">Highly Contaminated</span>
+                <h3 className="source-card__name">Borehole Water</h3>
+                <p className="source-card__desc">
                   Boreholes are vulnerable to surface contamination —
                   particularly during rainy season when runoff floods the
                   surrounding soil. Most residential boreholes are not tested
                   regularly.
                 </p>
-                <p className="finding">
+                <p className="source-card__finding">
                   University of Ibadan research: 100% of borehole samples
                   contained fecal indicator organisms.
                 </p>
-              </div>
+              </li>
 
-              <div className="source-card" data-animate data-animate-delay="2">
-                <div className="source-card__header">
-                  <span className="source-card__icon" aria-hidden="true"></span>
-                  <h3 className="source-card__name">Sachet &quot;Pure Water&quot;</h3>
-                  <span className="verdict">Frequently Contaminated</span>
-                </div>
-                <p>
+              <li className="source-card" data-animate data-animate-delay="1">
+                <span className="source-card__tag">Contaminated</span>
+                <h3 className="source-card__name">Tap / Pipe Water</h3>
+                <p className="source-card__desc">
+                  Municipal pipe infrastructure across Lagos, Abuja and Port
+                  Harcourt is aging and cracked. Water picks up rust, lead, and
+                  bacteria before reaching your tap. Treatment is inconsistent.
+                </p>
+                <p className="source-card__finding">
+                  E. coli detected in 100% of municipal water samples tested in
+                  Lagos residential areas.
+                </p>
+              </li>
+
+              <li className="source-card" data-animate data-animate-delay="2">
+                <span className="source-card__tag">Frequently Contaminated</span>
+                <h3 className="source-card__name">Sachet &quot;Pure Water&quot;</h3>
+                <p className="source-card__desc">
                   Sachet water production in Nigeria varies enormously in
                   quality. Many small-scale producers operate without adequate
                   sterilisation equipment. Even reputable brands show
                   inconsistent results.
                 </p>
-                <p className="finding">
+                <p className="source-card__finding">
                   87% of sachet water samples tested positive for E. coli or
                   Salmonella in peer-reviewed study.
                 </p>
-              </div>
+              </li>
 
-              <div className="source-card" data-animate data-animate-delay="3">
-                <div className="source-card__header">
-                  <span className="source-card__icon" aria-hidden="true"></span>
-                  <h3 className="source-card__name">Cooking Water</h3>
-                  <span className="verdict">Often Overlooked</span>
-                </div>
-                <p>
+              <li
+                className="source-card source-card--wide"
+                data-animate
+                data-animate-delay="3"
+              >
+                <span className="source-card__tag">Often Overlooked</span>
+                <h3 className="source-card__name">Cooking Water</h3>
+                <p className="source-card__desc">
                   Most Nigerian families filter their drinking water but cook
                   with unfiltered tap or borehole water. Boiling kills bacteria
                   but does not remove heavy metals, rust, or chemical residues.
                 </p>
-                <p className="finding">
+                <p className="source-card__finding">
                   Heavy metals and chemical contaminants concentrate in food
                   cooked with contaminated water — they do not boil away.
                 </p>
-              </div>
-            </div>
+              </li>
+            </ol>
           </div>
         </section>
 
@@ -1160,32 +1227,54 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ============ 14. FINAL CTA ============ */}
-        <section className="section section--dark final-cta" id="final-cta" aria-label="Final call to action">
-          <div className="container container--narrow">
-            <h2 className="final-cta__title">Your Family Drank Contaminated Water Today.</h2>
-            <p className="final-cta__text">
-              They do not have to tomorrow. One filter. Sixty seconds to
-              install. Clean water from your own tap — forever.
-            </p>
-            <button type="button" className="btn btn--light btn--lg btn--wide" data-modal-open>
-              Order OmiWater Now — Pay on Delivery →
-            </button>
-          </div>
-        </section>
       </main>
 
       {/* ============ 15. FOOTER ============ */}
-      <footer className="site-footer">
-        <div className="container">
-          <p className="site-footer__brand">OmiWater</p>
-          <p className="site-footer__tagline">Clean Water. Nigerian Homes. Delivered Fast.</p>
-          <p className="site-footer__note">
-            © 2026 OmiWater Nigeria. All rights reserved. · For orders and
-            enquiries: WhatsApp only. · Delivering to Lagos · Abuja · Port
-            Harcourt
-          </p>
+      <footer className="site-footer" id="final-cta">
+        <div className="site-footer__inner">
+          {/* Final CTA */}
+          <div className="site-footer__cta">
+            <h2 className="site-footer__cta-title">
+              Your Family Drank Contaminated Water Today.
+            </h2>
+            <p className="site-footer__cta-text">
+              They do not have to tomorrow. One filter. Sixty seconds to
+              install. Clean water from your own tap — forever.
+            </p>
+            <button
+              type="button"
+              className="btn btn--light btn--lg btn--wide"
+              data-modal-open
+            >
+              Order OmiWater Now — Pay on Delivery →
+            </button>
+          </div>
+
+          {/* Brand */}
+          <div className="site-footer__brand">
+            <p className="site-footer__logo">OmiWater</p>
+            <p className="site-footer__desc">
+              Clean water for Nigerian homes. The OmiWater faucet filter
+              removes E. coli, rust, and heavy metals from your tap — installs
+              in 60 seconds, no plumber required.
+            </p>
+          </div>
+
+          {/* Copyright bar */}
+          <div className="site-footer__bar">
+            <p className="site-footer__copy">
+              © 2026 OmiWater Nigeria. All rights reserved.
+            </p>
+            <p className="site-footer__attrib">
+              Delivering to Lagos · Abuja · Port Harcourt
+            </p>
+          </div>
         </div>
+
+        {/* Watermark */}
+        <p className="site-footer__watermark" aria-hidden="true">
+          OmiWater
+        </p>
       </footer>
 
       {/* ============ ORDER MODAL ============ */}
