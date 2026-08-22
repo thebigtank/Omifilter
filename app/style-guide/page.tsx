@@ -3,9 +3,9 @@ import Link from "next/link";
 import "./style-guide.css";
 
 export const metadata: Metadata = {
-  title: "Style Guide — OmiWater",
+  title: "Style Guide — OmiFilter",
   description:
-    "Five grayscale pricing-card variations for the OmiWater order modal, in wireframe.",
+    "Five grayscale pricing-card variations for the OmiFilter order modal, in wireframe.",
 };
 
 /* ════════════════════════════════════════════════════════════════════
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
    preserved exactly as they appear in the source.
    ════════════════════════════════════════════════════════════════════ */
 
-const EYEBROW = "Order OmiWater Today";
+const EYEBROW = "Order OmiFilter Today";
 const TITLE_ONE = "Choose Your Protection.";
 const TITLE_TWO = "Delivered To Your Door.";
 
@@ -238,7 +238,7 @@ function MenuVariation() {
   return (
     <article className="sg-menu" aria-label="Pricing as a restaurant menu">
       <header className="sg-menu__head">
-        <p className="sg-menu__kicker">OmiWater · Kitchen &amp; Bath</p>
+        <p className="sg-menu__kicker">OmiFilter · Kitchen &amp; Bath</p>
         <h3 className="sg-menu__name">The Clean Water Menu</h3>
         <p className="sg-menu__tagline">Served straight from your tap</p>
       </header>
@@ -480,7 +480,7 @@ export default function StyleGuidePage() {
           <h1 className="sg-header__title">Style Guide</h1>
           <p className="sg-header__sub">
             5 variations — reimagining the three-tier pricing inside the
-            OmiWater order modal as distinct everyday objects.
+            OmiFilter order modal as distinct everyday objects.
           </p>
         </div>
       </header>

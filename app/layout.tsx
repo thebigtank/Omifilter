@@ -15,9 +15,9 @@ const raleway = Raleway({
 });
 
 export const metadata: Metadata = {
-  title: "OmiWater — Clean Water From Your Tap",
+  title: "OmiFilter — Clean Water From Your Tap",
   description:
-    "The OmiWater faucet filter removes E. coli, rust, and heavy metals from Nigerian tap water. Installs in 60 seconds, no plumber required.",
+    "The OmiFilter faucet filter removes E. coli, rust, and heavy metals from Nigerian tap water. Installs in 60 seconds, no plumber required.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

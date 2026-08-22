@@ -1,5 +1,5 @@
 /**
- * OmiWater Wireframe Interactions
+ * OmiFilter Wireframe Interactions
  *
  *   data-animate           → scroll reveal
  *   data-animate-delay="N" → staggered scroll reveal
