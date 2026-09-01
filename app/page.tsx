@@ -1,1659 +1,862 @@
 "use client";
 
-import { useEffect } from "react";
+import Image from "next/image";
+import WaterCanvas from "./WaterCanvas";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ArrowRight,
-  ArrowDown,
-  ShoppingBag,
-  CloudRain,
-  Waves,
-  Droplet,
+  Biohazard,
+  Bug,
   Droplets,
+  Filter as FilterIcon,
+  FlaskConical,
+  Layers,
+  RefreshCw,
+  ShieldCheck,
+  ShoppingBasket,
+  Waves,
+  Wrench,
 } from "lucide-react";
+import {
+  CountUp,
+  REVEAL_BOOT_SCRIPT,
+  Reveal,
+  useRevealBoot,
+  useSequentialReveal,
+} from "./reveal";
+
+const parts = [
+  {
+    num: "1",
+    short: "Ceramic cartridge",
+    tag: "Stage one",
+    title: "Ceramic composite cartridge",
+    body: "The clear housing holds the first ceramic stage. Its pore structure physically traps rust flakes, sand, silt and suspended particles — the things that make water look cloudy or brown.",
+    x: "40%",
+    y: "40%",
+  },
+  {
+    num: "2",
+    short: "Carbon stage",
+    tag: "Stage two",
+    title: "Activated carbon media",
+    body: "Behind the ceramic, carbon media absorbs excess chlorine, trihalomethanes and organic chemical residues — the bleach taste and smell that signal over-chlorination.",
+    x: "33%",
+    y: "60%",
+  },
+  {
+    num: "3",
+    short: "Filtered outlet",
+    tag: "Output",
+    title: "Filtered water outlet",
+    body: "Filtered water leaves through the lower aerated outlet in a soft, even stream. This is the water for drinking, cooking and washing food.",
+    x: "34%",
+    y: "75%",
+  },
+  {
+    num: "4",
+    short: "Diverter switch",
+    tag: "Control",
+    title: "Filtered / unfiltered switch",
+    body: "Flip the side lever to send water straight through, unfiltered, for dishes and cleaning. That saves cartridge life for the water you actually drink.",
+    x: "70%",
+    y: "48%",
+  },
+  {
+    num: "5",
+    short: "Tap thread",
+    tag: "Fitting",
+    title: "Universal tap thread",
+    body: "The collar threads onto the standard aerator opening on Nigerian kitchen and bathroom taps. Hand-tight, with a rubber seal. No tools, no plumber.",
+    x: "57%",
+    y: "41%",
+  },
+  {
+    num: "6",
+    short: "Bypass outlet",
+    tag: "Output",
+    title: "Bypass outlet",
+    body: "The second outlet delivers full unfiltered flow at normal pressure, so filling pots and buckets is not slowed by the ceramic.",
+    x: "55%",
+    y: "69%",
+  },
+];
+
+const exploded = [
+  {
+    src: "/part-media-stack.jpg",
+    alt: "The filter opened up, showing its seven internal media layers",
+    label: "Seven media layers: mesh, diatom ceramic, activated carbon",
+  },
+  {
+    src: "/part-ceramic-housing.jpg",
+    alt: "Front view of the clear housing over the ceramic cartridge",
+    label: "Clear housing over the stage one ceramic cartridge",
+  },
+  {
+    src: "/part-diverter.jpg",
+    alt: "Angled view of the filter body showing the diverter lever",
+    label: "Diverter lever and the aerated filtered outlet",
+  },
+];
+
+const features = [
+  {
+    icon: Layers,
+    title: "Dual-stage ceramic",
+    body: "Two cartridges in sequence: the first takes out sediment and rust, the second chemical residues and microscopic contaminants.",
+  },
+  {
+    icon: FilterIcon,
+    title: "Rust, sediment, metals",
+    body: "Ceramic composite media traps iron particles, rust, sand and silt before they reach your glass. Water runs clear from the first use.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Chlorine & chemicals",
+    body: "Activated carbon absorbs excess chlorine and organic compounds, taking the bleach taste and smell with them.",
+  },
+  {
+    icon: Wrench,
+    title: "Fits every Nigerian tap",
+    body: "Standard aerator thread, hand-tight. No special tools, no plumber, no pipe work. Protection starts in sixty seconds.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "CE certified",
+    body: "Meets the European Union CE standard for filtration performance and material safety. Not a market product — a certified one.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Replaceable cartridges",
+    body: "The housing lasts years. Replace cartridges every three to six months; refills available on order, so protection never lapses.",
+  },
+];
+
+const stats = [
+  {
+    figure: "100%",
+    source: "University of Ibadan — borehole study",
+    body: "Every borehole sample tested across Lagos residential areas contained fecal indicator bacteria. Not some of them. All of them.",
+  },
+  {
+    figure: "87%",
+    source: "Journal of Water & Health — sachet study",
+    body: "Of sachet water samples — the pure water your children drink daily — tested positive for E. coli, Salmonella, or both.",
+  },
+  {
+    figure: "3×",
+    source: "Rainy season research",
+    body: "Contamination in Nigerian groundwater runs three times higher through the rains, as surface runoff floods into boreholes and wells.",
+  },
+  {
+    figure: "60M",
+    source: "WHO West Africa data",
+    body: "Nigerians lack access to safe drinking water. The public system will not fix this in time for your household.",
+  },
+];
+
+const contaminants = [
+  {
+    code: "E.COLI",
+    icon: Bug,
+    title: "Escherichia coli",
+    body: "Fecal bacteria, found in every Lagos borehole sample tested. Severe diarrhea and vomiting in adults; in children under five it can cause kidney failure. Antibiotic-resistant strains are now documented here.",
+  },
+  {
+    code: "RUST · PB",
+    icon: Droplets,
+    title: "Iron rust & heavy metals",
+    body: "Pipes laid decades ago are corroding from the inside, carrying iron, lead and manganese into every glass. You see the orange tint. You do not see the lead.",
+  },
+  {
+    code: "CL · CHEM",
+    icon: FlaskConical,
+    title: "Excess chlorine & chemicals",
+    body: "Municipal chlorination is inconsistent and often well above safe levels. Chlorine reacts with organic matter in pipes to form trihalomethanes, linked to liver and kidney damage.",
+  },
+  {
+    code: "SEDIMENT",
+    icon: Waves,
+    title: "Sediment & particles",
+    body: "Sand, silt and organic debris enter through cracked pipes and flooding. Each suspended particle carries bacteria on its surface, deeper into your drinking water.",
+  },
+  {
+    code: "PATHOGEN",
+    icon: Biohazard,
+    title: "Salmonella & other pathogens",
+    body: "Typhoid, cholera, Cryptosporidium and Giardia are consistent findings in Nigerian water research. The stomach illness that keeps returning is usually not the food.",
+  },
+];
+
+const sources = [
+  {
+    badge: "Highly contaminated",
+    title: "Borehole water",
+    body: "Vulnerable to surface contamination, especially in the rains. Most residential boreholes are never tested. Ibadan research: 100% carried fecal indicator organisms.",
+  },
+  {
+    badge: "Contaminated",
+    title: "Tap / pipe water",
+    body: "Aging, cracked municipal pipes pick up rust, lead and bacteria before the water reaches you. Treatment along the line is inconsistent.",
+  },
+  {
+    badge: "Frequently contaminated",
+    title: "Sachet pure water",
+    body: "Quality varies enormously between producers, many without adequate sterilisation. 87% of samples in one study tested positive for E. coli or Salmonella.",
+  },
+  {
+    badge: "Often overlooked",
+    title: "Cooking water",
+    body: "Families filter drinking water and cook with unfiltered. Metals and chemical residues concentrate in the pot — they do not boil away.",
+  },
+];
+
+const symptoms = [
+  {
+    title: "Recurring diarrhea",
+    body: "Especially in children. The most direct sign of E. coli or Salmonella.",
+  },
+  {
+    title: "Nausea & vomiting",
+    body: "Blamed on food poisoning again and again. If it repeats, look at the water.",
+  },
+  {
+    title: "Constant fatigue",
+    body: "Low-level contamination keeps the immune system busy and the body tired.",
+  },
+  {
+    title: "Frequent headaches",
+    body: "Lead and manganese exposure brings persistent headaches and mental fog.",
+  },
+  {
+    title: "Stomach cramps",
+    body: "Abdominal pain after drinking or eating is a classic bacterial sign.",
+  },
+  {
+    title: "Slow development",
+    body: "Lead impairs cognitive development in children under six, permanently.",
+  },
+];
+
+const steps = [
+  {
+    num: "1",
+    title: "Remove your aerator",
+    body: "Unscrew the small mesh piece at the tip of your tap by hand. Ten seconds, no tools.",
+  },
+  {
+    num: "2",
+    title: "Screw on OmiFilter",
+    body: "It threads straight onto the same opening. The rubber seal makes the joint watertight.",
+  },
+  {
+    num: "3",
+    title: "Turn on the tap",
+    body: "Water runs through both ceramic stages and out clean. Flip the side switch for unfiltered flow when washing up.",
+  },
+  {
+    num: "4",
+    title: "Replace every 3–6 months",
+    body: "When the flow slows, the ceramic is full. Swap the cartridges; the housing stays put.",
+  },
+];
+
+const tiers = [
+  {
+    tier: "Tier 01",
+    flag: "OMW·0421",
+    name: "Single unit",
+    price: "₦28,999",
+    units: "1 filter unit",
+    note: "Kitchen tap protection.",
+    feature: false,
+  },
+  {
+    tier: "Tier 02",
+    flag: "Most popular",
+    name: "Family pack",
+    price: "₦57,999",
+    units: "2 filter units",
+    note: "Kitchen and bathroom covered.",
+    feature: true,
+  },
+  {
+    tier: "Tier 03",
+    flag: "OMW·0421",
+    name: "Full home",
+    price: "₦78,000",
+    units: "3 filter units",
+    note: "Save ₦8,997 — every tap covered.",
+    feature: false,
+  },
+];
+
+// The annual cost of the alternatives, against one filter bought once.
+const costs = [
+  {
+    label: "Sachet water for the household",
+    detail: "₦8,000 a month, every month",
+    year: "₦96,000",
+  },
+  {
+    label: "Tanker and dispenser refills",
+    detail: "₦4,000 a month, every month",
+    year: "₦48,000",
+  },
+  {
+    label: "Medical bills from waterborne illness",
+    detail: "₦50,000 per person, family of five",
+    year: "₦250,000",
+  },
+];
+
+const heroStats = [
+  { figure: "60s", label: "to install, by hand" },
+  { figure: "2", label: "ceramic stages" },
+  { figure: "3–6", label: "months per cartridge" },
+];
+
+const faqs = [
+  {
+    title: "Will this fit my tap?",
+    body: "It fits standard Nigerian kitchen and bathroom taps with a threaded aerator opening, which covers the large majority of homes in Lagos, Abuja and Port Harcourt. If you are unsure, send a photo of your tap on WhatsApp and we will confirm before you order.",
+  },
+  {
+    title: "Does it remove E. coli?",
+    body: "The dual ceramic composite media traps micro-organisms above 0.1 microns, significantly reducing E. coli and other pathogens. For full household safety we recommend a filter on every drinking and cooking tap.",
+  },
+  {
+    title: "How long does a cartridge last?",
+    body: "Three to six months, depending on how contaminated your supply is. When the flow noticeably slows, the ceramic has reached capacity — unscrew and replace. The housing itself stays on the tap for years.",
+  },
+  {
+    title: "Do I need a plumber?",
+    body: "No. Unscrew your existing aerator, screw on OmiFilter by hand, done — under sixty seconds, no tools. A picture guide comes with every order.",
+  },
+  {
+    title: "What if it does not work for me?",
+    body: "Thirty-day satisfaction guarantee. If your water does not visibly improve within thirty days, message us on WhatsApp for a full refund. We are a Nigerian family business and our reputation is the product.",
+  },
+  {
+    title: "Can I use it for cooking water?",
+    body: "Yes, and we recommend it. Boiling kills bacteria but leaves heavy metals, rust and chemical residues behind. A filter on the kitchen tap covers drinking and cooking at once.",
+  },
+];
+
+/** Shared props for the basket glyph on every order button. */
+const basketProps = {
+  size: 18,
+  strokeWidth: 1.75,
+  "aria-hidden": true,
+} as const;
 
 export default function Home() {
+  const [part, setPart] = useState(0);
+  const [faq, setFaq] = useState(0);
+  const [navOpen, setNavOpen] = useState(false);
+
+  // Order modal: `front` is the tier currently at the front of the fan.
+  // Defaults to 1 — the featured Family Pack.
+  const [orderOpen, setOrderOpen] = useState(false);
+  const [front, setFront] = useState(1);
+  const lastFocused = useRef<HTMLElement | null>(null);
+  const closeBtn = useRef<HTMLButtonElement | null>(null);
+
+  const activePart = parts[part];
+
+  useRevealBoot();
+  const { gridRef: installGridRef, shown: stepsShown } =
+    useSequentialReveal(steps.length);
+
+  const openOrder = useCallback(() => {
+    lastFocused.current = document.activeElement as HTMLElement | null;
+    setNavOpen(false);
+    setOrderOpen(true);
+  }, []);
+
+  const closeOrder = useCallback(() => {
+    setOrderOpen(false);
+    lastFocused.current?.focus();
+  }, []);
+
+  // Lock body scroll, close on Escape, and move focus into the dialog.
   useEffect(() => {
-    const cleanupFns: Array<() => void> = [];
+    if (!orderOpen) return;
 
-    // ─── Scroll-Triggered Animations ───────────────────────────
-    const animateEls = document.querySelectorAll<HTMLElement>("[data-animate]");
-    let observer: IntersectionObserver | null = null;
+    document.body.classList.add("modal-open");
+    closeBtn.current?.focus();
 
-    if (animateEls.length) {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        animateEls.forEach((el) => el.classList.add("is-visible"));
-      } else {
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("is-visible");
-                observer?.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-        );
-        animateEls.forEach((el) => observer!.observe(el));
-      }
-    }
-
-    // ─── Sticky Nav Scroll State ───────────────────────────────
-    const header = document.querySelector<HTMLElement>(".site-header");
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          header?.classList.toggle("is-scrolled", window.scrollY > 8);
-          ticking = false;
-        });
-        ticking = true;
-      }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeOrder();
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    cleanupFns.push(() => window.removeEventListener("scroll", onScroll));
-
-    // ─── Mobile Menu ───────────────────────────────────────────
-    const toggle = document.querySelector<HTMLElement>("[data-menu-toggle]");
-    const menu = document.querySelector<HTMLElement>("[data-menu]");
-    const backdrop = document.querySelector<HTMLElement>(".mobile-menu-backdrop");
-
-    const openMenu = () => {
-      if (!menu) return;
-      menu.classList.add("is-open");
-      toggle?.setAttribute("aria-expanded", "true");
-      backdrop?.classList.add("is-visible");
-      document.body.style.overflow = "hidden";
-
-      const firstLink = menu.querySelector<HTMLElement>("a, button");
-      firstLink?.focus();
-    };
-
-    const closeMenu = () => {
-      if (!menu) return;
-      menu.classList.remove("is-open");
-      toggle?.setAttribute("aria-expanded", "false");
-      backdrop?.classList.remove("is-visible");
-      document.body.style.overflow = "";
-      toggle?.focus();
-    };
-
-    const onToggleClick = () => {
-      if (menu?.classList.contains("is-open")) closeMenu();
-      else openMenu();
-    };
-    toggle?.addEventListener("click", onToggleClick);
-    backdrop?.addEventListener("click", closeMenu);
-    cleanupFns.push(() => {
-      toggle?.removeEventListener("click", onToggleClick);
-      backdrop?.removeEventListener("click", closeMenu);
-    });
-
-    // ─── Accordion (FAQ) ───────────────────────────────────────
-    const triggers = document.querySelectorAll<HTMLElement>(
-      "[data-accordion-trigger]"
-    );
-
-    const onAccordionClick = (e: Event) => {
-      const trigger = e.currentTarget as HTMLElement;
-      const targetId = trigger.getAttribute("aria-controls");
-      if (!targetId) return;
-      const content = document.getElementById(targetId);
-      if (!content) return;
-
-      const isOpen = content.classList.contains("is-open");
-      const group = trigger.closest<HTMLElement>("[data-accordion-group]");
-      if (group) {
-        group
-          .querySelectorAll("[data-accordion-content]")
-          .forEach((c) => c.classList.remove("is-open"));
-        group
-          .querySelectorAll("[data-accordion-trigger]")
-          .forEach((t) => t.setAttribute("aria-expanded", "false"));
-      }
-
-      if (!isOpen) {
-        content.classList.add("is-open");
-        trigger.setAttribute("aria-expanded", "true");
-      } else {
-        content.classList.remove("is-open");
-        trigger.setAttribute("aria-expanded", "false");
-      }
-    };
-    triggers.forEach((t) => t.addEventListener("click", onAccordionClick));
-    cleanupFns.push(() =>
-      triggers.forEach((t) => t.removeEventListener("click", onAccordionClick))
-    );
-
-    // ─── Order Modal ───────────────────────────────────────────
-    const modal = document.querySelector<HTMLElement>("[data-modal]");
-    const openTriggers = document.querySelectorAll<HTMLElement>(
-      "[data-modal-open]"
-    );
-    const closeTriggers = modal
-      ? Array.from(modal.querySelectorAll<HTMLElement>("[data-modal-close]"))
-      : [];
-    const panel = modal?.querySelector<HTMLElement>(".modal__panel");
-    let lastFocused: HTMLElement | null = null;
-
-    const openModal = () => {
-      if (!modal) return;
-
-      // Close the mobile menu if it's open
-      if (menu?.classList.contains("is-open")) closeMenu();
-
-      lastFocused = document.activeElement as HTMLElement | null;
-      modal.hidden = false;
-      requestAnimationFrame(() => modal.classList.add("is-open"));
-      document.body.classList.add("modal-open");
-
-      const first = modal.querySelector<HTMLElement>(
-        ".modal__close, a[href], button"
-      );
-      first?.focus();
-    };
-
-    const closeModal = () => {
-      if (!modal || !modal.classList.contains("is-open")) return;
-      modal.classList.remove("is-open");
-      document.body.classList.remove("modal-open");
-
-      const finalize = () => {
-        if (!modal.classList.contains("is-open")) modal.hidden = true;
-      };
-      if (panel) panel.addEventListener("transitionend", finalize, { once: true });
-      window.setTimeout(finalize, 500);
-
-      lastFocused?.focus();
-    };
-
-    openTriggers.forEach((t) => t.addEventListener("click", openModal));
-    closeTriggers.forEach((t) => t.addEventListener("click", closeModal));
-    cleanupFns.push(() => {
-      openTriggers.forEach((t) => t.removeEventListener("click", openModal));
-      closeTriggers.forEach((t) => t.removeEventListener("click", closeModal));
-    });
-
-    // ─── Membership Cards: Bring-To-Front ──────────────────────
-    // The three pricing cards are fanned. Clicking (or Enter/Space on) any
-    // card brings it to the front of the fan by toggling `.is-front`.
-    // Cards are native <button>s, so Enter/Space dispatch a click event
-    // natively — no separate keydown handler is needed.
-    const membershipCards = document.querySelectorAll<HTMLElement>(
-      ".membership-card"
-    );
-    const onMembershipClick = (e: Event) => {
-      const card = e.currentTarget as HTMLElement;
-      if (!card.classList.contains("membership-card")) return;
-      if (card.classList.contains("is-front")) return;
-      membershipCards.forEach((c) => c.classList.remove("is-front"));
-      card.classList.add("is-front");
-    };
-    membershipCards.forEach((c) =>
-      c.addEventListener("click", onMembershipClick)
-    );
-    cleanupFns.push(() =>
-      membershipCards.forEach((c) =>
-        c.removeEventListener("click", onMembershipClick)
-      )
-    );
-
-    // ─── Contaminant Deck: Scroll-Stacked Cards ────────────────
-    // Five full-width cards pinned inside a tall track. As the user scrolls
-    // through the track, each card translates up from below the stage to its
-    // resting offset (i * --deck-peek), covering the card before it while
-    // leaving a peek strip at the top. The accent-fill hero card (01) stays
-    // at the base. Active at every viewport width — the deck pins and stacks
-    // on mobile just like desktop (mobile card/peek sizing is tuned in
-    // landing.css). Only prefers-reduced-motion collapses the deck to a
-    // normal stacked list (via .is-static + CSS) so there is no
-    // reserved-track dead scroll.
-    const deckEl = document.querySelector<HTMLElement>("[data-deck]");
-    const deckTrack = document.querySelector<HTMLElement>("[data-deck-track]");
-    const deckStage = document.querySelector<HTMLElement>("[data-deck-stage]");
-    const deckCards = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-deck-card]")
-    );
-    const reducedMotionMq = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-
-    let deckActive = false;
-    let deckTrackTop = 0;
-    let deckStageH = 0;
-    let deckTrackH = 0;
-    let deckPeek = 0;
-    let deckStickyTop = 0;
-    const DECK_STEPS = Math.max(deckCards.length - 1, 1);
-
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-    function updateDeck() {
-      if (!deckActive || !deckTrack || !deckStage) return;
-      const scrollY = window.scrollY;
-      const start = deckTrackTop - deckStickyTop;
-      const end = start + (deckTrackH - deckStageH);
-      const span = end - start || 1;
-      const progress = Math.min(Math.max((scrollY - start) / span, 0), 1);
-
-      deckCards.forEach((card, i) => {
-        // Card 0 (accent-fill hero) anchors the base of the deck.
-        if (i === 0) {
-          card.style.transform = "translateY(0px)";
-          return;
-        }
-        // Card i translates during the scroll slice [(i-1)/N, i/N].
-        const t0 = (i - 1) / DECK_STEPS;
-        const t1 = i / DECK_STEPS;
-        const local = Math.min(Math.max((progress - t0) / (t1 - t0), 0), 1);
-        const eased = easeOutCubic(local);
-        const startTranslate = deckStageH - i * deckPeek;
-        card.style.transform = `translateY(${
-          (startTranslate * (1 - eased)).toFixed(1)
-        }px)`;
-      });
-    }
-
-    function measureDeck() {
-      if (!deckEl || !deckTrack || !deckStage || deckCards.length === 0) return;
-      deckActive = !reducedMotionMq.matches;
-
-      if (!deckActive) {
-        // Static mode (reduced motion) — clear inline transforms so the CSS
-        // media query renders the deck as a normal stacked list (also forces
-        // any stale transforms off).
-        deckCards.forEach((c) => (c.style.transform = ""));
-        deckEl.classList.add("is-static");
-        return;
-      }
-      deckEl.classList.remove("is-static");
-
-      const trackRect = deckTrack.getBoundingClientRect();
-      const stageRect = deckStage.getBoundingClientRect();
-      deckTrackTop = trackRect.top + window.scrollY;
-      deckStageH = stageRect.height;
-      deckTrackH = trackRect.height;
-      deckStickyTop = parseFloat(getComputedStyle(deckStage).top) || 0;
-      deckPeek =
-        deckCards.length > 1
-          ? parseFloat(getComputedStyle(deckCards[1]).top) || 0
-          : 0;
-
-      updateDeck();
-    }
-
-    let deckTicking = false;
-    const onDeckScroll = () => {
-      if (!deckActive) return;
-      if (!deckTicking) {
-        requestAnimationFrame(() => {
-          updateDeck();
-          deckTicking = false;
-        });
-        deckTicking = true;
-      }
-    };
-
-    const onDeckResize = () => measureDeck();
-
-    window.addEventListener("scroll", onDeckScroll, { passive: true });
-    window.addEventListener("resize", onDeckResize);
-    measureDeck();
-    cleanupFns.push(() => {
-      window.removeEventListener("scroll", onDeckScroll);
-      window.removeEventListener("resize", onDeckResize);
-    });
-
-    // ─── Keyboard (Escape) ─────────────────────────────────────
-    const onKeydown = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (menu?.classList.contains("is-open")) closeMenu();
-      if (modal?.classList.contains("is-open")) closeModal();
-    };
-    document.addEventListener("keydown", onKeydown);
-    cleanupFns.push(() => document.removeEventListener("keydown", onKeydown));
+    document.addEventListener("keydown", onKey);
 
     return () => {
-      observer?.disconnect();
-      cleanupFns.forEach((fn) => fn());
+      document.body.classList.remove("modal-open");
+      document.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [orderOpen, closeOrder]);
 
   return (
     <>
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
+      {/* Arms the reveal hidden-state during HTML parse, so content is never
+          stranded invisible when scripting is off or the bundle fails. */}
+      <script
+        dangerouslySetInnerHTML={{ __html: REVEAL_BOOT_SCRIPT }}
+      />
 
-      {/* ============ 1. HEADER / STICKY NAV ============ */}
       <header className="site-header">
-        <div className="container nav">
-          <a href="#hero" className="brand">
-            Omi<em>Filter</em>
-          </a>
-
-          <nav className="nav__links" aria-label="Main navigation">
-            <a href="#findings" className="nav__link">
-              The Evidence
-            </a>
-            <a href="#contaminants" className="nav__link">
-              Contaminants
-            </a>
-            <a href="#product" className="nav__link">
-              The Filter
-            </a>
-            <a href="#cost" className="nav__link">
-              Cost
-            </a>
-            <button type="button" className="nav__link" data-modal-open>
-              Order
-            </button>
-          </nav>
-
-          <div className="nav__actions">
-            <button type="button" className="btn btn--primary nav__cta" data-modal-open>
-              Order Now
-              <ShoppingBag size={16} aria-hidden="true" />
-            </button>
-            <button
-              className="icon-btn nav__toggle"
-              data-menu-toggle
-              aria-expanded="false"
-              aria-controls="mobile-menu"
-              aria-label="Open menu"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
-          </div>
+        <div className="wordmark">
+          Omi<em>Filter</em>
         </div>
-      </header>
-
-      {/* Mobile menu */}
-      <div className="mobile-menu" id="mobile-menu" data-menu>
-        <nav aria-label="Mobile navigation">
-          <a href="#findings" className="mobile-menu__link">
-            The Evidence
+        <nav className="site-nav" data-open={navOpen}>
+          <a href="#filter" onClick={() => setNavOpen(false)}>
+            The filter
           </a>
-          <a href="#contaminants" className="mobile-menu__link">
-            Contaminants
+          <a href="#water" onClick={() => setNavOpen(false)}>
+            Your water
           </a>
-          <a href="#product" className="mobile-menu__link">
-            The Filter
+          <a href="#install" onClick={() => setNavOpen(false)}>
+            Install
           </a>
-          <a href="#cost" className="mobile-menu__link">
-            Cost
-          </a>
-          <button type="button" className="mobile-menu__link" data-modal-open>
+          <button
+            type="button"
+            className="btn btn--teal"
+            onClick={openOrder}
+          >
+            <ShoppingBasket {...basketProps} />
             Order
           </button>
         </nav>
-      </div>
-      <div className="mobile-menu-backdrop"></div>
+        <button
+          type="button"
+          className="nav-toggle"
+          aria-expanded={navOpen}
+          aria-label="Toggle navigation"
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          <span />
+        </button>
+      </header>
 
-      <main id="main-content">
-        {/* ============ 2. HERO ============ */}
-        <section className="hero" id="hero" aria-label="Introduction">
-          <div
-            className="hero__media"
-            role="img"
-            aria-label="Photo of a water faucet with running water"
-          />
-
-          <div className="hero__overlay">
-            <span className="hero__eyebrow">OmiFilter Nigeria — Tap Water Protection System</span>
-            <h1 className="hero__title">
-              The Water Killing
+      <main>
+        <section className="hero" id="hero">
+          <div>
+            <Reveal className="hero__badge">
+              <span className="hero__dot" />
+              CE certified · Lagos · Abuja · Port Harcourt
+            </Reveal>
+            <Reveal as="h1" className="hero__title" index={1}>
+              Clean water,
               <br />
-              Nigerian Families
+              straight from
               <br />
-              <span className="hero__ghost">Is Invisible.</span>
-            </h1>
-            <p className="hero__sub">
-              You cannot see E. coli. You cannot taste it. You cannot smell it.
-              But University of Ibadan researchers found it in{" "}
-              <strong>every borehole sample tested</strong> across Lagos. Your
-              family drank water today. Was it safe?
-            </p>
-            <div className="hero__cta">
-              <button type="button" className="btn btn--solid" data-modal-open>
-                Protect My Family
-                <ArrowRight size={16} aria-hidden="true" />
+              <em>your own tap.</em>
+            </Reveal>
+            <Reveal as="p" className="hero__lede" index={2}>
+              OmiFilter is a dual-ceramic faucet filter that screws onto a
+              standard Nigerian tap in sixty seconds. No plumber. No tank. No
+              electricity. It takes out the rust, sediment, chlorine and
+              bacteria your family cannot see.
+            </Reveal>
+            <Reveal className="hero__actions" index={3}>
+              <button type="button" className="btn btn--ink" onClick={openOrder}>
+                <ShoppingBasket {...basketProps} />
+                Order <span>→</span>
               </button>
-              <a href="#findings" className="btn btn--outline">
-                Show the evidence
-                <ArrowDown size={16} aria-hidden="true" />
-              </a>
+              <div className="hero__assurance">
+                No payment on delivery
+                <br />
+                30-day money-back guarantee
+              </div>
+            </Reveal>
+            <div className="hero__stats">
+              {heroStats.map((s, i) => (
+                <Reveal key={s.label} index={4 + i}>
+                  <div className="hero__stat-figure">
+                    <CountUp value={s.figure} />
+                  </div>
+                  <div className="hero__stat-label">{s.label}</div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+          <div className="hero__media">
+            <div className="hero__glow" />
+            <WaterCanvas
+              className="hero__image"
+              src="/hero-tap-filter.webp"
+              alt="OmiFilter fitted to a kitchen tap with water running"
+              width={900}
+              height={900}
+              priority
+            />
+            <div className="hero__tag">
+              <div className="hero__tag-label">Model</div>
+              <div className="hero__tag-value">Dual Ceramic Composite</div>
             </div>
           </div>
         </section>
 
-        {/* ============ 3. FINDINGS / SCIENCE ============ */}
-        <section className="section findings" id="findings" aria-label="The science">
-          <div className="container">
-            <span className="section-eyebrow">The Science — Peer-Reviewed Research</span>
-            <h2 className="section__title">
-              What Nigerian Scientists
-              <br />
-              Found In Your Water.
-            </h2>
-
-            <ol
-              className="findings-timeline"
-              role="list"
-              aria-label="Research findings escalating in scope"
-            >
-              <li className="finding-node" data-animate data-animate-delay="0">
-                <div className="finding-node__card">
-                  <div className="finding-node__head">
-                    <span className="finding-node__dot" aria-hidden="true">
-                      01
-                    </span>
-                    <div
-                      className="finding-node__level"
-                      role="img"
-                      aria-label="Severity level 1 of 4"
-                    >
-                      <span className="is-on" />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                  </div>
-                  <p className="finding-node__stat">100%</p>
-                  <p className="finding-node__source">University of Ibadan — Borehole Study</p>
-                  <p className="finding-node__desc">
-                    Every single borehole water sample tested across Lagos
-                    residential areas contained fecal indicator bacteria. Not
-                    some. <strong>Every one.</strong>
-                  </p>
-                </div>
-              </li>
-
-              <li className="finding-node" data-animate data-animate-delay="1">
-                <div className="finding-node__card">
-                  <div className="finding-node__head">
-                    <span className="finding-node__dot" aria-hidden="true">
-                      02
-                    </span>
-                    <div
-                      className="finding-node__level"
-                      role="img"
-                      aria-label="Severity level 2 of 4"
-                    >
-                      <span className="is-on" />
-                      <span className="is-on" />
-                      <span />
-                      <span />
-                    </div>
-                  </div>
-                  <p className="finding-node__stat">87%</p>
-                  <p className="finding-node__source">Journal of Water & Health — Sachet Study</p>
-                  <p className="finding-node__desc">
-                    Of sachet water samples — the &quot;pure water&quot; your
-                    children drink every day — tested positive for E. coli,
-                    Salmonella, or both.
-                  </p>
-                </div>
-              </li>
-
-              <li className="finding-node" data-animate data-animate-delay="2">
-                <div className="finding-node__card">
-                  <div className="finding-node__head">
-                    <span className="finding-node__dot" aria-hidden="true">
-                      03
-                    </span>
-                    <div
-                      className="finding-node__level"
-                      role="img"
-                      aria-label="Severity level 3 of 4"
-                    >
-                      <span className="is-on" />
-                      <span className="is-on" />
-                      <span className="is-on" />
-                      <span />
-                    </div>
-                  </div>
-                  <p className="finding-node__stat">3×</p>
-                  <p className="finding-node__source">Rainy Season Research</p>
-                  <p className="finding-node__desc">
-                    Contamination levels in Nigerian groundwater spike three times
-                    higher during rainy season as surface runoff floods into
-                    boreholes and wells.
-                  </p>
-                </div>
-              </li>
-
-              <li className="finding-node" data-animate data-animate-delay="3">
-                <div className="finding-node__card">
-                  <div className="finding-node__head">
-                    <span className="finding-node__dot" aria-hidden="true">
-                      04
-                    </span>
-                    <div
-                      className="finding-node__level"
-                      role="img"
-                      aria-label="Severity level 4 of 4"
-                    >
-                      <span className="is-on" />
-                      <span className="is-on" />
-                      <span className="is-on" />
-                      <span className="is-on" />
-                    </div>
-                  </div>
-                  <p className="finding-node__stat">60M</p>
-                  <p className="finding-node__source">WHO West Africa Data</p>
-                  <p className="finding-node__desc">
-                    Nigerians currently lack access to safe drinking water. The
-                    government system alone cannot solve this.{" "}
-                    <strong>You must protect your own home.</strong>
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-
-        {/* ============ 4. CONTAMINANTS ============ */}
-        <section className="section contaminants" id="contaminants" aria-label="Contaminants">
-          <div className="container">
-            <span className="section-eyebrow">What Is In Your Water Right Now</span>
-            <h2 className="section__title">
-              Five Contaminants.
-              <br />
-              One Glass of Water.
-            </h2>
-            <p className="section__lead">
-              Nigerian tap water, borehole water, and even commercially produced
-              sachet water carry a cocktail of contaminants that cause immediate
-              illness — and long-term damage your family may not connect to the
-              water they drink every day.
-            </p>
-
-            <div className="contaminant-deck" data-deck>
-              <div className="contaminant-deck__track" data-deck-track>
-                <div className="contaminant-deck__stage" data-deck-stage>
-                  <ol
-                    className="contaminant-deck__cards"
-                    role="list"
-                    aria-label="Five contaminants stacked as a deck"
+        <section className="section filter" id="filter">
+          <div className="shell filter__grid">
+            <div>
+              <Reveal className="eyebrow">The filter, part by part</Reveal>
+              <Reveal as="h2" className="filter__title" index={1}>
+                Six parts. One
+                <br />
+                clear glass of water.
+              </Reveal>
+              <Reveal as="p" className="filter__lede" index={2}>
+                Tap a marker on the filter to see what that part does.
+              </Reveal>
+              <Reveal className="filter__panel" index={3}>
+                <div className="eyebrow">{activePart.tag}</div>
+                <h3>{activePart.title}</h3>
+                <p>{activePart.body}</p>
+              </Reveal>
+              <Reveal className="filter__chips" index={4}>
+                {parts.map((p, i) => (
+                  <button
+                    key={p.num}
+                    type="button"
+                    className="chip"
+                    aria-pressed={i === part}
+                    onClick={() => setPart(i)}
                   >
-                    <li
-                      className="contaminant-deck__card contaminant-deck__card--tone-1"
-                      data-deck-card
-                    >
-                      <div className="contaminant-deck__head">
-                        <span className="contaminant-deck__num" aria-hidden="true">01</span>
-                        <span className="contaminant-deck__index">1 of 5</span>
-                      </div>
-                      <h3 className="contaminant-deck__title">
-                        <span>E.</span>
-                        <span className="contaminant-deck__ghost">COLI</span>
-                      </h3>
-                      <p className="contaminant-deck__name">
-                        Escherichia coli (E. coli)
-                      </p>
-                      <p className="contaminant-deck__short">
-                        Fecal bacteria found in every borehole sample tested
-                        across Lagos.
-                      </p>
-                      <p className="contaminant-deck__desc">
-                        <strong>The primary threat.</strong> E. coli is
-                        fecal bacteria — it enters your water supply when
-                        human or animal waste contaminates boreholes,
-                        wells, and poorly sealed water tanks. In healthy
-                        adults it causes severe diarrhea and vomiting. In
-                        children under 5 and the elderly,{" "}
-                        <strong>
-                          it can cause kidney failure and death.
-                        </strong>{" "}
-                        Antibiotic-resistant strains are now documented in
-                        Nigerian water sources — meaning standard treatment
-                        no longer works.
-                      </p>
-                      <div className="contaminant-deck__meta">
-                        <ul
-                          className="contaminant-deck__tags"
-                          role="list"
-                          aria-label="Contaminant categories"
-                        >
-                          <li className="contaminant-deck__tag">Bacteria</li>
-                          <li className="contaminant-deck__tag">Fecal</li>
-                        </ul>
-                      </div>
-                    </li>
-
-                    <li
-                      className="contaminant-deck__card contaminant-deck__card--tone-2"
-                      data-deck-card
-                    >
-                      <div className="contaminant-deck__head">
-                        <span className="contaminant-deck__num" aria-hidden="true">02</span>
-                        <span className="contaminant-deck__index">2 of 5</span>
-                      </div>
-                      <h3 className="contaminant-deck__title">
-                        <span>RUST</span>
-                        <span className="contaminant-deck__ghost">LEAD</span>
-                      </h3>
-                      <p className="contaminant-deck__name">
-                        Iron Rust &amp; Heavy Metals
-                      </p>
-                      <p className="contaminant-deck__short">
-                        Corroding pipes carry iron, lead, and manganese into
-                        every glass.
-                      </p>
-                      <p className="contaminant-deck__desc">
-                        Nigeria&apos;s aging pipe infrastructure — in Lagos,
-                        Abuja, and Port Harcourt — is corroding from the
-                        inside.{" "}
-                        <strong>
-                          Every time water flows through a rusted pipe it
-                          carries iron particles, lead, and manganese
-                          directly into your glass.
-                        </strong>{" "}
-                        Long-term heavy metal exposure causes neurological
-                        damage in children, hypertension, and kidney
-                        disease. You see it as orange or brown
-                        discolouration. You do not see the lead.
-                      </p>
-                      <div className="contaminant-deck__meta">
-                        <ul
-                          className="contaminant-deck__tags"
-                          role="list"
-                          aria-label="Contaminant categories"
-                        >
-                          <li className="contaminant-deck__tag">Heavy Metals</li>
-                          <li className="contaminant-deck__tag">Corrosion</li>
-                        </ul>
-                      </div>
-                    </li>
-
-                    <li
-                      className="contaminant-deck__card contaminant-deck__card--tone-3"
-                      data-deck-card
-                    >
-                      <div className="contaminant-deck__head">
-                        <span className="contaminant-deck__num" aria-hidden="true">03</span>
-                        <span className="contaminant-deck__index">3 of 5</span>
-                      </div>
-                      <h3 className="contaminant-deck__title">
-                        <span>CHLR</span>
-                        <span className="contaminant-deck__ghost">CHEM</span>
-                      </h3>
-                      <p className="contaminant-deck__name">
-                        Excess Chlorine &amp; Chemical Residues
-                      </p>
-                      <p className="contaminant-deck__short">
-                        Inconsistent chlorination forms compounds linked to
-                        long-term illness.
-                      </p>
-                      <p className="contaminant-deck__desc">
-                        Municipal water treatment in Nigeria uses chlorine
-                        to kill bacteria — but the amounts applied are
-                        inconsistent and often{" "}
-                        <strong>far exceed safe consumption levels.</strong>{" "}
-                        Excess chlorine reacts with organic matter in pipes
-                        to form trihalomethanes — compounds linked to liver
-                        damage, kidney problems, and increased cancer risk
-                        with long-term exposure.
-                      </p>
-                      <div className="contaminant-deck__meta">
-                        <ul
-                          className="contaminant-deck__tags"
-                          role="list"
-                          aria-label="Contaminant categories"
-                        >
-                          <li className="contaminant-deck__tag">Chemical</li>
-                          <li className="contaminant-deck__tag">Chlorination</li>
-                        </ul>
-                      </div>
-                    </li>
-
-                    <li
-                      className="contaminant-deck__card contaminant-deck__card--tone-4"
-                      data-deck-card
-                    >
-                      <div className="contaminant-deck__head">
-                        <span className="contaminant-deck__num" aria-hidden="true">04</span>
-                        <span className="contaminant-deck__index">4 of 5</span>
-                      </div>
-                      <h3 className="contaminant-deck__title">
-                        <span>SDMT</span>
-                        <span className="contaminant-deck__ghost">SILT</span>
-                      </h3>
-                      <p className="contaminant-deck__name">
-                        Sediment &amp; Suspended Particles
-                      </p>
-                      <p className="contaminant-deck__short">
-                        Cloudy water is a suspension of particles that carry
-                        bacteria.
-                      </p>
-                      <p className="contaminant-deck__desc">
-                        Sand, silt, clay, and organic debris enter Nigerian
-                        water supplies through cracked pipes, poorly
-                        maintained water towers, and seasonal flooding.{" "}
-                        <strong>
-                          What you see as cloudy or murky water is a
-                          suspension of particles
-                        </strong>{" "}
-                        that carry bacteria on their surface — each
-                        particle a vehicle delivering contamination deeper
-                        into your drinking water.
-                      </p>
-                      <div className="contaminant-deck__meta">
-                        <ul
-                          className="contaminant-deck__tags"
-                          role="list"
-                          aria-label="Contaminant categories"
-                        >
-                          <li className="contaminant-deck__tag">Sediment</li>
-                          <li className="contaminant-deck__tag">Particulates</li>
-                        </ul>
-                      </div>
-                    </li>
-
-                    <li
-                      className="contaminant-deck__card contaminant-deck__card--tone-5"
-                      data-deck-card
-                    >
-                      <div className="contaminant-deck__head">
-                        <span className="contaminant-deck__num" aria-hidden="true">05</span>
-                        <span className="contaminant-deck__index">5 of 5</span>
-                      </div>
-                      <h3 className="contaminant-deck__title">
-                        <span>BACT</span>
-                        <span className="contaminant-deck__ghost">PATH</span>
-                      </h3>
-                      <p className="contaminant-deck__name">
-                        Salmonella &amp; Other Pathogens
-                      </p>
-                      <p className="contaminant-deck__short">
-                        Typhoid, cholera, and more — documented in water across
-                        every major city.
-                      </p>
-                      <p className="contaminant-deck__desc">
-                        Beyond E. coli, Nigerian water sources contain
-                        Salmonella typhi (typhoid fever), Vibrio cholerae
-                        (cholera), Cryptosporidium, and Giardia.{" "}
-                        <strong>
-                          These are not rare exceptions — they are
-                          consistent findings in peer-reviewed research
-                        </strong>{" "}
-                        conducted on Nigerian water sources across every
-                        major city. The stomach illness your family
-                        experiences repeatedly is not food poisoning. It is
-                        your water.
-                      </p>
-                      <div className="contaminant-deck__meta">
-                        <ul
-                          className="contaminant-deck__tags"
-                          role="list"
-                          aria-label="Contaminant categories"
-                        >
-                          <li className="contaminant-deck__tag">Pathogens</li>
-                          <li className="contaminant-deck__tag">Microbial</li>
-                        </ul>
-                      </div>
-                    </li>
-                  </ol>
-                </div>
-              </div>
+                    {p.short}
+                  </button>
+                ))}
+              </Reveal>
             </div>
-          </div>
-        </section>
-
-        {/* ============ 5. PATHWAY ============ */}
-        <section className="section pathway" id="pathway" aria-label="How contamination reaches you">
-          <div className="container">
-            <div className="pathway__layout">
-              <ol
-                className="pathway__stack"
-                role="list"
-                aria-label="How contamination starts and travels underground"
-              >
-                <li className="pathway-card" data-animate data-animate-delay="0">
-                  <span className="pathway-card__icon" aria-hidden="true">
-                    <CloudRain size={22} aria-hidden="true" />
-                  </span>
-                  <h3 className="pathway-card__title">Rainy Season</h3>
-                  <p className="pathway-card__desc">
-                    Surface runoff carries fecal matter into boreholes and shallow
-                    wells. Contamination triples during April–October.
-                  </p>
-                </li>
-                <li className="pathway-card" data-animate data-animate-delay="1">
-                  <span className="pathway-card__icon" aria-hidden="true">
-                    <Waves size={22} aria-hidden="true" />
-                  </span>
-                  <h3 className="pathway-card__title">Underground</h3>
-                  <p className="pathway-card__desc">
-                    E. coli survives in groundwater for months. It has no colour.
-                    No smell. No taste. It is invisible.
-                  </p>
-                </li>
-              </ol>
-
-              <div className="pathway__media" data-animate data-animate-delay="2">
-                <div className="pathway__head">
-                  <span className="section-eyebrow pathway__eyebrow">
-                    How Contamination Reaches You
-                  </span>
-                  <h2 className="section__title pathway__title">
-                    The Journey From Ground
-                    <br />
-                    To Your Glass.
-                  </h2>
-                </div>
-              </div>
-
-              <ol
-                className="pathway__stack"
-                role="list"
-                aria-label="How contamination travels through pipes to your tap"
-              >
-                <li className="pathway-card" data-animate data-animate-delay="3">
-                  <span className="pathway-card__icon" aria-hidden="true">
-                    <Droplet size={22} aria-hidden="true" />
-                  </span>
-                  <h3 className="pathway-card__title">Rusted Pipes</h3>
-                  <p className="pathway-card__desc">
-                    Water travels through infrastructure not replaced since the
-                    1980s, picking up rust, lead, and heavy metals.
-                  </p>
-                </li>
-                <li className="pathway-card" data-animate data-animate-delay="4">
-                  <span className="pathway-card__icon" aria-hidden="true">
-                    <Droplets size={22} aria-hidden="true" />
-                  </span>
-                  <h3 className="pathway-card__title">Your Tap</h3>
-                  <p className="pathway-card__desc">
-                    Contaminated water arrives at your tap — and without a filter,
-                    directly into your cooking pot and drinking glass.
-                  </p>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* ============ 6. WATER SOURCES ============ */}
-        <section className="section sources" id="sources" aria-label="Water sources">
-          <div className="container">
-            <span className="section-eyebrow">No Water Source Is Safe — Without Filtration</span>
-            <h2 className="section__title">
-              You Switched To Pure Water.
-              <br />
-              You Are Still Not Safe.
-            </h2>
-            <p className="section__lead">
-              Most Nigerian families believe they solved the water problem when
-              they switched from tap water to sachet or bottled water. The
-              research says otherwise. Every commonly trusted water source in
-              Nigeria carries documented contamination risk.
-            </p>
-
-            <ol
-              className="sources-grid"
-              role="list"
-              aria-label="Water sources in an alternating-width grid"
-            >
-              <li
-                className="source-card source-card--wide"
-                data-animate
-                data-animate-delay="0"
-              >
-                <span className="source-card__tag">Highly Contaminated</span>
-                <h3 className="source-card__name">Borehole Water</h3>
-                <p className="source-card__desc">
-                  Boreholes are vulnerable to surface contamination —
-                  particularly during rainy season when runoff floods the
-                  surrounding soil. Most residential boreholes are not tested
-                  regularly.
-                </p>
-                <p className="source-card__finding">
-                  University of Ibadan research: 100% of borehole samples
-                  contained fecal indicator organisms.
-                </p>
-              </li>
-
-              <li className="source-card" data-animate data-animate-delay="1">
-                <span className="source-card__tag">Contaminated</span>
-                <h3 className="source-card__name">Tap / Pipe Water</h3>
-                <p className="source-card__desc">
-                  Municipal pipe infrastructure across Lagos, Abuja and Port
-                  Harcourt is aging and cracked. Water picks up rust, lead, and
-                  bacteria before reaching your tap. Treatment is inconsistent.
-                </p>
-                <p className="source-card__finding">
-                  E. coli detected in 100% of municipal water samples tested in
-                  Lagos residential areas.
-                </p>
-              </li>
-
-              <li className="source-card" data-animate data-animate-delay="2">
-                <span className="source-card__tag">Frequently Contaminated</span>
-                <h3 className="source-card__name">Sachet &quot;Pure Water&quot;</h3>
-                <p className="source-card__desc">
-                  Sachet water production in Nigeria varies enormously in
-                  quality. Many small-scale producers operate without adequate
-                  sterilisation equipment. Even reputable brands show
-                  inconsistent results.
-                </p>
-                <p className="source-card__finding">
-                  87% of sachet water samples tested positive for E. coli or
-                  Salmonella in peer-reviewed study.
-                </p>
-              </li>
-
-              <li
-                className="source-card source-card--wide"
-                data-animate
-                data-animate-delay="3"
-              >
-                <span className="source-card__tag">Often Overlooked</span>
-                <h3 className="source-card__name">Cooking Water</h3>
-                <p className="source-card__desc">
-                  Most Nigerian families filter their drinking water but cook
-                  with unfiltered tap or borehole water. Boiling kills bacteria
-                  but does not remove heavy metals, rust, or chemical residues.
-                </p>
-                <p className="source-card__finding">
-                  Heavy metals and chemical contaminants concentrate in food
-                  cooked with contaminated water — they do not boil away.
-                </p>
-              </li>
-            </ol>
-          </div>
-        </section>
-
-        {/* ============ 7. SYMPTOMS ============ */}
-        <section className="section section--alt symptoms" id="symptoms" aria-label="Symptoms">
-          <div className="container">
-            <span className="section-eyebrow">Recognise These?</span>
-            <h2 className="section__title">
-              Symptoms Your Family
-              <br />
-              May Already Have.
-            </h2>
-            <p className="section__lead">
-              Waterborne illness in Nigeria is dramatically under-diagnosed
-              because the symptoms are common — and most families attribute them
-              to food, not water. If your household experiences any of these
-              regularly, your water is the most likely cause.
-            </p>
-
-            <ul
-              className="symptoms-ramp__list"
-              role="list"
-              aria-label="Symptoms as severity ramps"
-            >
-              <li className="symptom-row" data-animate data-animate-delay="0">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "100%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Recurring Diarrhea</h3>
-                    <span className="symptom-row__count">4/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Especially in children. The most direct symptom of E. coli
-                    and Salmonella ingestion.
-                  </p>
-                </div>
-              </li>
-              <li className="symptom-row" data-animate data-animate-delay="1">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "50%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Nausea &amp; Vomiting</h3>
-                    <span className="symptom-row__count">2/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Mistaken for food poisoning repeatedly. If it keeps
-                    happening, the water is the source.
-                  </p>
-                </div>
-              </li>
-              <li className="symptom-row" data-animate data-animate-delay="2">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "50%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Constant Fatigue</h3>
-                    <span className="symptom-row__count">2/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Chronic low-level contamination suppresses the immune
-                    system, leaving the body perpetually exhausted.
-                  </p>
-                </div>
-              </li>
-              <li className="symptom-row" data-animate data-animate-delay="3">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "75%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Frequent Headaches</h3>
-                    <span className="symptom-row__count">3/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Heavy metal contamination — particularly lead and manganese
-                    — causes persistent headaches and cognitive fog.
-                  </p>
-                </div>
-              </li>
-              <li className="symptom-row" data-animate data-animate-delay="4">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "75%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Stomach Cramps</h3>
-                    <span className="symptom-row__count">3/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Abdominal pain after drinking water or eating is a classic
-                    sign of bacterial contamination.
-                  </p>
-                </div>
-              </li>
-              <li className="symptom-row" data-animate data-animate-delay="5">
-                <span className="symptom-row__ramp" aria-hidden="true">
-                  <span className="symptom-row__fill" style={{ height: "100%" }} />
-                </span>
-                <div className="symptom-row__body">
-                  <div className="symptom-row__head">
-                    <h3 className="symptom-row__name">Children&apos;s Development</h3>
-                    <span className="symptom-row__count">4/4</span>
-                  </div>
-                  <p className="symptom-row__desc">
-                    Lead in drinking water directly impairs cognitive
-                    development in children under 6. Effects are permanent.
-                  </p>
-                </div>
-              </li>
-            </ul>
-
-            <div className="symptom-callout" data-animate>
-              <h3>The children in your house are the most vulnerable.</h3>
-              <p>
-                Their immune systems cannot fight the bacteria the way adults
-                can. What causes a stomach ache in you can cause kidney failure
-                in a child under 5. E. coli haemolytic uraemic syndrome — a
-                life-threatening complication — disproportionately kills
-                Nigerian children. This is not a scare tactic. It is documented
-                medical reality.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ============ 8. PRODUCT / SOLUTION ============ */}
-        <section className="section product" id="product" aria-label="The solution">
-          <div className="container">
-            <span className="section-eyebrow">The Solution — OmiFilter Faucet Filter</span>
-            <h2 className="section__title">
-              Clean Water From
-              <br />
-              Your Own Tap. From Today.
-            </h2>
-            <p className="section__lead">
-              OmiFilter&apos;s dual-ceramic composite faucet filter attaches to
-              any standard Nigerian tap in under 60 seconds. No plumber. No
-              tank. No electricity. Just clean, filtered water every time you
-              turn your tap — for your family, your cooking, your drinking.
-            </p>
-
-            <div className="product__layout">
-              <div className="product__visual" data-animate>
-                <div
-                  className="product__visual-img"
-                  style={{ aspectRatio: "1 / 1" }}
-                  role="img"
-                  aria-label="OmiFilter dual-ceramic faucet filter dispensing water"
+            <div className="filter__figure">
+              <Reveal className="filter__stage">
+                <Image
+                  src="/aquaplus-filter.webp"
+                  alt="OmiFilter dual ceramic faucet filter"
+                  width={900}
+                  height={900}
                 />
-                <p className="product__visual-name">OmiFilter</p>
-                <p className="product__visual-sub">Dual Ceramic Composite System</p>
-                <span className="product__badge">CE Certified — International Safety Standard</span>
+                {parts.map((p, i) => (
+                  <button
+                    key={p.num}
+                    type="button"
+                    className="hotspot"
+                    style={{ left: p.x, top: p.y }}
+                    title={p.title}
+                    aria-label={p.title}
+                    aria-pressed={i === part}
+                    onClick={() => setPart(i)}
+                  >
+                    {p.num}
+                  </button>
+                ))}
+              </Reveal>
+              <div className="filter__exploded">
+                {exploded.map((e, i) => (
+                  <Reveal key={e.src} index={i + 1}>
+                    <div className="filter__slot">
+                      <Image
+                        src={e.src}
+                        alt={e.alt}
+                        width={800}
+                        height={800}
+                      />
+                    </div>
+                    <div className="filter__slot-label">{e.label}</div>
+                  </Reveal>
+                ))}
               </div>
-
-              <ul className="feature-list" role="list">
-                <li className="feature" data-animate data-animate-delay="0">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">Dual-Stage Ceramic Filtration</h3>
-                    <p>
-                      Two ceramic composite cartridges working in sequence — the
-                      first removes sediment and rust particles, the second
-                      targets chemical residues and microscopic contaminants.
-                      Double the protection of standard single-stage filters.
-                    </p>
-                  </div>
-                </li>
-                <li className="feature" data-animate data-animate-delay="1">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">Removes Rust, Sediment & Heavy Metals</h3>
-                    <p>
-                      The ceramic composite media physically traps iron
-                      particles, rust, sand, and suspended sediment before they
-                      reach your glass. Your water runs clear from the first use.
-                    </p>
-                  </div>
-                </li>
-                <li className="feature" data-animate data-animate-delay="2">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">Reduces Chlorine & Chemical Residues</h3>
-                    <p>
-                      Activated carbon media absorbs excess chlorine,
-                      trihalomethanes, and organic chemical compounds — removing
-                      the bleach taste and odour that signals chemical
-                      contamination.
-                    </p>
-                  </div>
-                </li>
-                <li className="feature" data-animate data-animate-delay="3">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">Universal Fit — Every Nigerian Tap</h3>
-                    <p>
-                      Engineered to fit standard Nigerian kitchen and bathroom
-                      taps. No special tools. No plumber required. Install it
-                      yourself in 60 seconds and your protection starts
-                      immediately.
-                    </p>
-                  </div>
-                </li>
-                <li className="feature" data-animate data-animate-delay="4">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">CE Certified — European Safety Standard</h3>
-                    <p>
-                      OmiFilter meets the European Union&apos;s CE safety
-                      certification — a rigorous international standard for
-                      filtration performance and material safety. Not a cheap
-                      market product. A certified health solution.
-                    </p>
-                  </div>
-                </li>
-                <li className="feature" data-animate data-animate-delay="5">
-                  <span className="feature__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h3 className="feature__name">Replaceable Cartridges — Long-Term Protection</h3>
-                    <p>
-                      The filter housing lasts for years. Replace only the
-                      ceramic cartridges every 3–6 months depending on your
-                      water quality. Replacement cartridges available on order —
-                      your protection continues indefinitely.
-                    </p>
-                  </div>
-                </li>
-              </ul>
             </div>
           </div>
         </section>
 
-        {/* ============ 9. HOW IT WORKS ============ */}
-        <section className="section section--alt how" id="how" aria-label="How it works">
-          <div className="container">
-            <span className="section-eyebrow">Installation & How It Works</span>
-            <h2 className="section__title">
-              From Box to Clean Water
-              <br />
-              In 60 Seconds.
-            </h2>
-
-            <ol className="how__steps" role="list">
-              <li className="how-step" data-animate data-animate-delay="0">
-                <span className="how-step__num">1</span>
-                <div>
-                  <h3 className="how-step__title">Remove Your Tap Aerator</h3>
-                  <p>
-                    Unscrew the small mesh aerator at the tip of your tap by
-                    hand. No tools needed. Most Nigerian kitchen and bathroom
-                    taps have a standard aerator fitting that takes 10 seconds
-                    to remove.
-                  </p>
+        <section className="section">
+          <div className="shell features">
+            {features.map((f, i) => (
+              <Reveal className="feature" key={f.title} index={i}>
+                <div className="feature__num">
+                  <f.icon size={22} strokeWidth={1.5} aria-hidden />
                 </div>
-              </li>
-              <li className="how-step" data-animate data-animate-delay="1">
-                <span className="how-step__num">2</span>
-                <div>
-                  <h3 className="how-step__title">Attach OmiFilter</h3>
-                  <p>
-                    Screw the OmiFilter filter directly onto your tap in place of
-                    the aerator. It threads on by hand — no tools, no plumber,
-                    no pipe modifications. The rubber seal creates a watertight
-                    connection.
-                  </p>
-                </div>
-              </li>
-              <li className="how-step" data-animate data-animate-delay="2">
-                <span className="how-step__num">3</span>
-                <div>
-                  <h3 className="how-step__title">Turn On Your Tap</h3>
-                  <p>
-                    Water flows through both ceramic cartridges — removing
-                    sediment, rust, and chemical residues — and comes out clean
-                    from the filter outlet. The switch on the side lets you
-                    alternate between filtered and unfiltered flow for washing
-                    dishes.
-                  </p>
-                </div>
-              </li>
-              <li className="how-step" data-animate data-animate-delay="3">
-                <span className="how-step__num">4</span>
-                <div>
-                  <h3 className="how-step__title">Replace Cartridges Every 3–6 Months</h3>
-                  <p>
-                    When your water flow noticeably slows — the ceramic has
-                    absorbed its maximum capacity of contaminants. Unscrew the
-                    cartridges and replace them. The housing stays on your tap
-                    permanently.
-                  </p>
-                </div>
-              </li>
-            </ol>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </Reveal>
+            ))}
           </div>
         </section>
 
-        {/* ============ 10. COST / MATH (signature) ============ */}
-        <section className="section section--dark cost" id="cost" aria-label="The financial case">
-          <div className="container">
-            <span className="section-eyebrow">The Financial Case — Real Numbers</span>
-            <h2 className="section__title">
-              You Are Already Spending
-              <br />
-              ₦120,000 Per Year On Water.
-            </h2>
-
-            <div className="cost__calculator" data-animate>
-              <div className="cost__row">
-                <div className="cost__label">
-                  Monthly sachet water spend
-                  <span>Average Lagos household — 2 to 4 packs per week</span>
-                </div>
-                <div className="cost__value">₦8,000/mo</div>
-              </div>
-              <div className="cost__row">
-                <div className="cost__label">
-                  Monthly water tanker / dispenser refills
-                  <span>Common in areas with poor pipe pressure</span>
-                </div>
-                <div className="cost__value">₦4,000/mo</div>
-              </div>
-              <div className="cost__row">
-                <div className="cost__label">
-                  Medical bills from waterborne illness
-                  <span>Conservative estimate — one illness per household per year</span>
-                </div>
-                <div className="cost__value">₦15,000/yr</div>
-              </div>
-              <div className="cost__row">
-                <div className="cost__label">
-                  Total annual water-related spending
-                  <span>What you spend every year — without a filter</span>
-                </div>
-                <div className="cost__value cost__value--strike">₦159,000/yr</div>
-              </div>
-              <div className="cost__row cost__row--total">
-                <div className="cost__label">
-                  OmiFilter — Total First Year Cost
-                  <span>Filter + cartridge replacement at 6 months</span>
-                </div>
-                <div className="cost__value">₦22,000</div>
-              </div>
-            </div>
-
-            <p className="cost__verdict">
-              You spend ₦159,000 per year on water that still makes your family
-              sick. OmiFilter costs <strong>₦17,500 once.</strong> It pays for
-              itself in <strong>5 weeks.</strong>
-            </p>
-          </div>
-        </section>
-
-        {/* ============ 11. TESTIMONIALS ============ */}
-        <section className="section testimonials" id="testimonials" aria-label="Testimonials">
-          <div className="container">
-            <span className="section-eyebrow">Real Nigerian Families</span>
-            <h2 className="section__title">
-              What Happens When
-              <br />
-              You Make the Switch.
-            </h2>
-
-            <div className="grid-3 testimonials__grid">
-              <figure className="testimonial" data-animate data-animate-delay="0">
-                <blockquote>
-                  &quot;My children had stomach problems every month. I thought
-                  it was something they were eating at school. After installing
-                  OmiFilter on our kitchen tap, three months passed without a
-                  single stomach complaint. I wish I had done this years
-                  ago.&quot;
-                </blockquote>
-                <figcaption className="testimonial__author">
-                  <span className="testimonial__avatar" aria-hidden="true">
-                    MC
-                  </span>
-                  <span>
-                    <span className="testimonial__name">Mama Chidinma</span>
-                    <span className="testimonial__location">Surulere, Lagos</span>
-                  </span>
-                </figcaption>
-              </figure>
-
-              <figure className="testimonial" data-animate data-animate-delay="1">
-                <blockquote>
-                  &quot;Our borehole water was always slightly brown. We had
-                  been ignoring it because we couldn&apos;t afford a big
-                  filtration system. OmiFilter solved it for ₦17,500. The water
-                  runs clear now. My wife stopped buying pure water
-                  completely.&quot;
-                </blockquote>
-                <figcaption className="testimonial__author">
-                  <span className="testimonial__avatar" aria-hidden="true">
-                    EB
-                  </span>
-                  <span>
-                    <span className="testimonial__name">Engr. Babatunde</span>
-                    <span className="testimonial__location">Gwarinpa, Abuja</span>
-                  </span>
-                </figcaption>
-              </figure>
-
-              <figure className="testimonial" data-animate data-animate-delay="2">
-                <blockquote>
-                  &quot;I am a nurse. I know what E. coli does to the body. When
-                  I read the research about borehole water I ordered
-                  immediately. Our filter has been on the kitchen tap for 4
-                  months. I recommend it to every patient who comes in with
-                  stomach problems.&quot;
-                </blockquote>
-                <figcaption className="testimonial__author">
-                  <span className="testimonial__avatar" aria-hidden="true">
-                    NA
-                  </span>
-                  <span>
-                    <span className="testimonial__name">Nurse Adaeze</span>
-                    <span className="testimonial__location">Port Harcourt GRA</span>
-                  </span>
-                </figcaption>
-              </figure>
+        <section className="section section--flush-top" id="water">
+          <div className="shell">
+            <Reveal className="eyebrow">Peer-reviewed Nigerian research</Reveal>
+            <Reveal as="h2" className="stats__title" index={1}>
+              What scientists found in the water your family drinks.
+            </Reveal>
+            <div className="stats__grid">
+              {stats.map((s, i) => (
+                <Reveal className="stat" key={s.figure} index={i}>
+                  <div className="stat__figure">
+                    <CountUp value={s.figure} />
+                  </div>
+                  <div className="stat__source">{s.source}</div>
+                  <p>{s.body}</p>
+                </Reveal>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Pricing moved to the order modal (opened via the "Order" buttons) */}
-
-        {/* ============ 13. FAQ ============ */}
-        <section className="section faq" id="faq" aria-label="Frequently asked questions">
-          <div className="container">
-            <span className="section-eyebrow">Common Questions</span>
-            <h2 className="section__title">Questions Answered.</h2>
-
-            <div className="faq__list" data-accordion-group>
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-1"
-                >
-                  <span className="faq__num" aria-hidden="true">01</span>
-                  <h3 className="faq__q">Will this fit my tap?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-1" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      OmiFilter fits standard Nigerian kitchen and bathroom taps
-                      with a threaded aerator opening — which covers the vast
-                      majority of taps in Lagos, Abuja, and Port Harcourt homes.
-                      If you are unsure, send us a photo of your tap on WhatsApp
-                      before ordering and we will confirm compatibility.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-2"
-                >
-                  <span className="faq__num" aria-hidden="true">02</span>
-                  <h3 className="faq__q">Does it remove E. coli completely?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-2" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      OmiFilter&apos;s dual ceramic composite filtration
-                      significantly reduces bacterial contamination including E.
-                      coli and other pathogenic organisms. The ceramic composite
-                      media physically traps micro-organisms above 0.1 microns.
-                      For complete household water safety, we recommend
-                      installing on all drinking and cooking taps.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-3"
-                >
-                  <span className="faq__num" aria-hidden="true">03</span>
-                  <h3 className="faq__q">How long does the filter last?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-3" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      The filter housing is permanent — it stays on your tap
-                      indefinitely. The ceramic cartridges should be replaced
-                      every 3 to 6 months depending on how contaminated your
-                      water supply is. You will know it is time to replace when
-                      the water flow rate noticeably slows — the ceramic has
-                      reached its capacity. Replacement cartridges are available
-                      from us on order.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-4"
-                >
-                  <span className="faq__num" aria-hidden="true">04</span>
-                  <h3 className="faq__q">Do I need a plumber to install it?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-4" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      No. Installation requires zero tools and no plumbing
-                      knowledge. You unscrew the existing aerator from your tap,
-                      screw on the OmiFilter filter by hand, and you are done.
-                      The entire process takes under 60 seconds. We include a
-                      step-by-step picture guide with every order.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-5"
-                >
-                  <span className="faq__num" aria-hidden="true">05</span>
-                  <h3 className="faq__q">What if it does not work for me?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-5" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      We offer a 30-day satisfaction guarantee. If your water
-                      quality does not improve visibly within 30 days of
-                      installation, contact us on WhatsApp and we will process a
-                      full refund. We are a Nigerian family business — our
-                      reputation is built on your results, not just your
-                      purchase.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="faq__item">
-                <button
-                  className="faq__trigger"
-                  data-accordion-trigger
-                  aria-expanded="false"
-                  aria-controls="faq-6"
-                >
-                  <span className="faq__num" aria-hidden="true">06</span>
-                  <h3 className="faq__q">Can I use it for cooking water too?</h3>
-                  <span className="faq__ind" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-plus">
-                      <path d="M5 12h14" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="faq__ind-minus">
-                      <path d="M5 12h14M12 5v14" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq__content" id="faq-6" data-accordion-content>
-                  <div className="faq__a">
-                    <p>
-                      Yes — and we strongly recommend it. Most Nigerian families
-                      filter their drinking water but cook with unfiltered
-                      water. Boiling kills bacteria but does not remove heavy
-                      metals, rust, or chemical residues. OmiFilter on your
-                      kitchen tap protects both your drinking water and your
-                      cooking water simultaneously.
-                    </p>
-                  </div>
-                </div>
-              </div>
+        <section className="section section--no-top">
+          <div className="shell">
+            <div className="contaminants__head">
+              <Reveal as="h2">
+                Five contaminants,
+                <br />
+                one glass of water.
+              </Reveal>
+              <Reveal as="p" index={1}>
+                Tap water, borehole water and sachet water all carry the same
+                cocktail — bacteria that make your family sick this week, and
+                metals that damage them over years.
+              </Reveal>
             </div>
+            <div className="contaminants__grid">
+              {contaminants.map((c, i) => (
+                <Reveal className="contaminant" key={c.code} index={i}>
+                  <div className="contaminant__meta">
+                    <span className="contaminant__code">{c.code}</span>
+                    <c.icon
+                      className="contaminant__icon"
+                      size={18}
+                      strokeWidth={1.6}
+                      aria-hidden
+                    />
+                  </div>
+                  <h3>{c.title}</h3>
+                  <p>{c.body}</p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--no-top">
+          <div className="shell sources">
+            <Reveal as="h2">
+              You switched to pure water. You are still not safe.
+            </Reveal>
+            <div className="sources__grid">
+              {sources.map((w, i) => (
+                <Reveal className="source" key={w.title} index={i}>
+                  <div className="source__badge">{w.badge}</div>
+                  <h3>{w.title}</h3>
+                  <p>{w.body}</p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--no-top">
+          <div className="shell symptoms">
+            <div>
+              <Reveal as="h2">Symptoms your family may already have.</Reveal>
+              <Reveal as="p" className="symptoms__lede" index={1}>
+                Waterborne illness is under-diagnosed here because the signs
+                look ordinary, and families blame the food. If these repeat in
+                your house, start with the water.
+              </Reveal>
+              <Reveal as="p" className="symptoms__note" index={2}>
+                Children under five are the most exposed. What gives an adult a
+                stomach ache can put a small child in hospital.
+              </Reveal>
+            </div>
+            <div className="symptoms__grid">
+              {symptoms.map((s, i) => (
+                <Reveal className="symptom" key={s.title} index={i}>
+                  <h3>{s.title}</h3>
+                  <p>{s.body}</p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section install" id="install">
+          <div className="shell">
+            <Reveal className="eyebrow">Installation</Reveal>
+            <Reveal as="h2" index={1}>
+              From box to clean water in sixty seconds.
+            </Reveal>
+            {/* Steps are driven by scroll position, not the shared observer:
+                on desktop all four sit on one row and would otherwise pop in
+                together. See useSequentialReveal. */}
+            <div className="install__grid" ref={installGridRef}>
+              {steps.map((st, i) => (
+                <div
+                  className="step"
+                  key={st.num}
+                  data-reveal=""
+                  data-revealed={i < stepsShown ? "true" : undefined}
+                >
+                  <div className="step__num">{st.num}</div>
+                  <h3>{st.title}</h3>
+                  <p>{st.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section cost" id="cost">
+          <div className="shell">
+            <Reveal className="eyebrow">
+              The financial case — real numbers
+            </Reveal>
+            <Reveal as="h2" className="cost__title" index={1}>
+              You already spend ₦394,000
+              <br />a year on water.
+            </Reveal>
+
+            <div className="cost__table">
+              {costs.map((c, i) => (
+                <Reveal className="cost__row" key={c.label} index={i}>
+                  <div className="cost__label">
+                    {c.label}
+                    <span>{c.detail}</span>
+                  </div>
+                  <div className="cost__value">
+                    <CountUp value={c.year} />
+                  </div>
+                </Reveal>
+              ))}
+
+              <Reveal className="cost__row cost__row--sum" index={3}>
+                <div className="cost__label">
+                  What your household spends now
+                  <span>Every year, on water that still makes you ill</span>
+                </div>
+                <div className="cost__value cost__value--strike">
+                  <CountUp value="₦394,000" />
+                </div>
+              </Reveal>
+
+              <Reveal className="cost__row cost__row--total" index={4}>
+                <div className="cost__label">
+                  OmiFilter — bought once
+                  <span>One filter unit, plus ₦5,000 shipping</span>
+                </div>
+                <div className="cost__value">
+                  <CountUp value="₦28,999" />
+                </div>
+              </Reveal>
+            </div>
+
+            <Reveal as="p" className="cost__verdict" index={5}>
+              You spend <strong>₦394,000</strong> a year on water that still
+              makes your family sick. OmiFilter costs{" "}
+              <strong>₦28,999 once</strong> — it pays for itself in under a
+              month.
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="section" id="order">
+          <div className="shell">
+            <div className="order__head">
+              <Reveal as="h2">Choose your protection.</Reveal>
+              <Reveal as="p" index={1}>
+                Delivered to Lagos, Abuja and Port Harcourt. No payment on
+                delivery. Shipping ₦5,000.
+              </Reveal>
+            </div>
+            <div className="order__grid">
+              {tiers.map((t, i) => (
+                <Reveal
+                  className={`tier${t.feature ? " tier--feature" : ""}`}
+                  key={t.name}
+                  index={i}
+                >
+                  <div className="tier__meta">
+                    <span>{t.tier}</span>
+                    <span>{t.flag}</span>
+                  </div>
+                  <h3>{t.name}</h3>
+                  <div className="tier__price">{t.price}</div>
+                  <div className="tier__units">{t.units}</div>
+                  <div className="tier__note">{t.note}</div>
+                  <a href="#" className="tier__cta">
+                    <ShoppingBasket {...basketProps} />
+                    Order on WhatsApp →
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="faq">
+          <Reveal as="h2">Questions answered.</Reveal>
+          <div className="faq__list">
+            {faqs.map((q, i) => {
+              const open = faq === i;
+              return (
+                <Reveal className="faq__item" key={q.title} index={i}>
+                  <button
+                    type="button"
+                    className="faq__trigger"
+                    aria-expanded={open}
+                    aria-controls={`faq-answer-${i}`}
+                    onClick={() => setFaq(open ? -1 : i)}
+                  >
+                    <span>{q.title}</span>
+                    <span className="faq__sign">{open ? "−" : "+"}</span>
+                  </button>
+                  {open && (
+                    <p className="faq__answer" id={`faq-answer-${i}`}>
+                      {q.body}
+                    </p>
+                  )}
+                </Reveal>
+              );
+            })}
           </div>
         </section>
 
       </main>
 
-      {/* ============ 15. FOOTER ============ */}
       <footer className="site-footer" id="final-cta">
         <div className="site-footer__inner">
-          {/* Final CTA */}
           <div className="site-footer__cta">
-            <h2 className="site-footer__cta-title">
-              Your Family Drank Contaminated Water Today.
-            </h2>
-            <p className="site-footer__cta-text">
+            <Reveal as="h2" className="site-footer__cta-title">
+              Your family drank unfiltered water today.
+            </Reveal>
+            <Reveal as="p" className="site-footer__cta-text" index={1}>
               They do not have to tomorrow. One filter. Sixty seconds to
               install. Clean water from your own tap — forever.
-            </p>
-            <button
-              type="button"
-              className="btn btn--light btn--lg btn--wide"
-              data-modal-open
-            >
-              Order OmiFilter Now — Pay on Delivery →
-            </button>
+            </Reveal>
+            <Reveal as="div" index={2}>
+              <button
+                type="button"
+                className="btn btn--teal"
+                onClick={openOrder}
+              >
+                <ShoppingBasket {...basketProps} />
+                Order OmiFilter →
+              </button>
+            </Reveal>
           </div>
 
-          {/* Brand */}
           <div className="site-footer__brand">
-            <p className="site-footer__logo">OmiFilter</p>
-            <p className="site-footer__desc">
+            <Reveal as="p" className="site-footer__logo">
+              OmiFilter
+            </Reveal>
+            <Reveal as="p" className="site-footer__desc" index={1}>
               Clean water for Nigerian homes. The OmiFilter faucet filter
-              removes E. coli, rust, and heavy metals from your tap — installs
+              removes E. coli, rust and heavy metals from your tap — installs
               in 60 seconds, no plumber required.
-            </p>
+            </Reveal>
           </div>
 
-          {/* Copyright bar */}
           <div className="site-footer__bar">
             <p className="site-footer__copy">
               © 2026 OmiFilter Nigeria. All rights reserved.
@@ -1664,125 +867,113 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Watermark */}
         <p className="site-footer__watermark" aria-hidden="true">
           OmiFilter
         </p>
       </footer>
 
       {/* ============ ORDER MODAL ============ */}
-      <div
-        className="modal"
-        id="order-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="order-modal-title"
-        data-modal
-        hidden
-      >
-        <div className="modal__backdrop" data-modal-close></div>
-        <div className="modal__panel">
-          <button
-            type="button"
-            className="modal__close"
-            data-modal-close
-            aria-label="Close order dialog"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-
-          <span className="section-eyebrow">Order OmiFilter Today</span>
-          <h2 className="modal__title" id="order-modal-title">
-            Choose Your Protection.
-            <br />
-            Delivered To Your Door.
-          </h2>
-
-          <div className="membership" aria-label="Pricing as membership cards">
+      {orderOpen && (
+        <div
+          className="modal is-open"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-modal-title"
+        >
+          <div className="modal__backdrop" onClick={closeOrder} />
+          <div className="modal__panel">
             <button
+              ref={closeBtn}
               type="button"
-              className="membership-card membership-card--left"
+              className="modal__close"
+              onClick={closeOrder}
+              aria-label="Close order dialog"
             >
-              <span className="membership-card__row">
-                <span className="membership-card__tier">Tier 01</span>
-                <span className="membership-card__no">OMW·0421</span>
-              </span>
-              <span className="membership-card__barcode" aria-hidden="true" />
-              <span className="membership-card__name">Single Unit</span>
-              <span className="membership-card__price">₦17,500</span>
-              <span className="membership-card__units">1 filter unit</span>
-              <span className="membership-card__save">Kitchen tap protection</span>
-              <span className="membership-card__punch" aria-hidden="true">
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole" />
-                <span className="membership-card__hole" />
-              </span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <line
+                  x1="18"
+                  y1="6"
+                  x2="6"
+                  y2="18"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
 
-            <button
-              type="button"
-              className="membership-card membership-card--featured is-front"
-            >
-              <span className="membership-card__tab" aria-hidden="true">
-                Most Popular
-              </span>
-              <span className="membership-card__row">
-                <span className="membership-card__tier">Tier 02</span>
-                <span className="membership-card__no">OMW·0421</span>
-              </span>
-              <span className="membership-card__barcode" aria-hidden="true" />
-              <span className="membership-card__name">Family Pack</span>
-              <span className="membership-card__price">₦32,000</span>
-              <span className="membership-card__units">2 filter units</span>
-              <span className="membership-card__save">
-                SAVE ₦3,000 — Kitchen + Bathroom
-              </span>
-              <span className="membership-card__punch" aria-hidden="true">
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-              </span>
-            </button>
+            <div className="eyebrow">Order OmiFilter today</div>
+            <h2 className="modal__title" id="order-modal-title">
+              Choose your protection.
+              <br />
+              Delivered to your door.
+            </h2>
 
-            <button
-              type="button"
-              className="membership-card membership-card--right"
-            >
-              <span className="membership-card__row">
-                <span className="membership-card__tier">Tier 03</span>
-                <span className="membership-card__no">OMW·0421</span>
-              </span>
-              <span className="membership-card__barcode" aria-hidden="true" />
-              <span className="membership-card__name">Full Home</span>
-              <span className="membership-card__price">₦45,000</span>
-              <span className="membership-card__units">3 filter units</span>
-              <span className="membership-card__save">
-                SAVE ₦7,500 — All taps covered
-              </span>
-              <span className="membership-card__punch" aria-hidden="true">
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-                <span className="membership-card__hole membership-card__hole--on" />
-              </span>
-            </button>
-          </div>
+            <div className="membership" aria-label="Pricing tiers">
+              {tiers.map((t, i) => {
+                const pos =
+                  i === 0 ? " membership-card--left" : i === 2 ? " membership-card--right" : "";
+                const feat = t.feature ? " membership-card--featured" : "";
+                const isFront = front === i ? " is-front" : "";
+                return (
+                  <button
+                    key={t.name}
+                    type="button"
+                    className={`membership-card${pos}${feat}${isFront}`}
+                    aria-pressed={front === i}
+                    onClick={() => setFront(i)}
+                  >
+                    {t.feature && (
+                      <span className="membership-card__tab" aria-hidden="true">
+                        Most popular
+                      </span>
+                    )}
+                    <span className="membership-card__row">
+                      <span className="membership-card__tier">{t.tier}</span>
+                      <span className="membership-card__no">OMW·0421</span>
+                    </span>
+                    <span className="membership-card__barcode" aria-hidden="true" />
+                    <span className="membership-card__name">{t.name}</span>
+                    <span className="membership-card__price">{t.price}</span>
+                    <span className="membership-card__units">{t.units}</span>
+                    <span className="membership-card__save">{t.note}</span>
+                    <span className="membership-card__punch" aria-hidden="true">
+                      {Array.from({ length: 5 }, (_, h) => (
+                        <span
+                          key={h}
+                          className={`membership-card__hole${
+                            h < 3 + i ? " membership-card__hole--on" : ""
+                          }`}
+                        />
+                      ))}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-          <div className="pricing__cta">
-            <a href="#" className="btn btn--primary btn--lg btn--wide">
-              Order on WhatsApp →
-            </a>
+            <div className="modal__cta">
+              <a href="#" className="btn btn--teal">
+                <ShoppingBasket {...basketProps} />
+                Order {tiers[front].name} →
+              </a>
+              <p className="modal__fineprint">
+                No payment on delivery · Shipping ₦5,000 · 30-day money-back
+                guarantee
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
