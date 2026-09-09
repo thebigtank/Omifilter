@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import WaterCanvas from "./WaterCanvas";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -316,33 +317,6 @@ const heroStats = [
   { figure: "3–6", label: "months per cartridge" },
 ];
 
-const faqs = [
-  {
-    title: "Will this fit my tap?",
-    body: "It fits standard Nigerian kitchen and bathroom taps with a threaded aerator opening, which covers the large majority of homes in Lagos, Abuja and Port Harcourt. If you are unsure, send a photo of your tap on WhatsApp and we will confirm before you order.",
-  },
-  {
-    title: "Does it remove E. coli?",
-    body: "The dual ceramic composite media traps micro-organisms above 0.1 microns, significantly reducing E. coli and other pathogens. For full household safety we recommend a filter on every drinking and cooking tap.",
-  },
-  {
-    title: "How long does a cartridge last?",
-    body: "Three to six months, depending on how contaminated your supply is. When the flow noticeably slows, the ceramic has reached capacity — unscrew and replace. The housing itself stays on the tap for years.",
-  },
-  {
-    title: "Do I need a plumber?",
-    body: "No. Unscrew your existing aerator, screw on OmiFilter by hand, done — under sixty seconds, no tools. A picture guide comes with every order.",
-  },
-  {
-    title: "What if it does not work for me?",
-    body: "Thirty-day satisfaction guarantee. If your water does not visibly improve within thirty days, message us on WhatsApp for a full refund. We are a Nigerian family business and our reputation is the product.",
-  },
-  {
-    title: "Can I use it for cooking water?",
-    body: "Yes, and we recommend it. Boiling kills bacteria but leaves heavy metals, rust and chemical residues behind. A filter on the kitchen tap covers drinking and cooking at once.",
-  },
-];
-
 /** Shared props for the basket glyph on every order button. */
 const basketProps = {
   size: 18,
@@ -352,7 +326,6 @@ const basketProps = {
 
 export default function Home() {
   const [part, setPart] = useState(0);
-  const [faq, setFaq] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
 
   // Order modal: `front` is the tier currently at the front of the fan.
@@ -419,6 +392,9 @@ export default function Home() {
           <a href="#install" onClick={() => setNavOpen(false)}>
             Install
           </a>
+          <Link href="/faq" onClick={() => setNavOpen(false)}>
+            FAQ
+          </Link>
           <button
             type="button"
             className="btn btn--teal"
@@ -791,34 +767,6 @@ export default function Home() {
                 </Reveal>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="faq">
-          <Reveal as="h2">Questions answered.</Reveal>
-          <div className="faq__list">
-            {faqs.map((q, i) => {
-              const open = faq === i;
-              return (
-                <Reveal className="faq__item" key={q.title} index={i}>
-                  <button
-                    type="button"
-                    className="faq__trigger"
-                    aria-expanded={open}
-                    aria-controls={`faq-answer-${i}`}
-                    onClick={() => setFaq(open ? -1 : i)}
-                  >
-                    <span>{q.title}</span>
-                    <span className="faq__sign">{open ? "−" : "+"}</span>
-                  </button>
-                  {open && (
-                    <p className="faq__answer" id={`faq-answer-${i}`}>
-                      {q.body}
-                    </p>
-                  )}
-                </Reveal>
-              );
-            })}
           </div>
         </section>
 
