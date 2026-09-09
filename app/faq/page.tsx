@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import "./faq.css";
 import { FaqList } from "./faq-list";
@@ -113,8 +114,20 @@ export default function FaqPage() {
             </p>
           </header>
 
-          <div className="faq-page">
-            <FaqList faqs={faqs} />
+          <div className="faq-layout">
+            <div className="faq-page">
+              <FaqList faqs={faqs} />
+            </div>
+            <aside className="faq-side" aria-label="OmiWater filter illustration">
+              <Image
+                src="/faq-water-filter.jpg"
+                alt="OmiWater filter turning 1000+ TDS, heavily scaled and polluted water into pure, clean drinking water"
+                width={1024}
+                height={1280}
+                className="faq-side__img"
+                priority
+              />
+            </aside>
           </div>
         </div>
       </main>

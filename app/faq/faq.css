@@ -56,9 +56,17 @@
   padding: 104px var(--gutter) 128px;
 }
 
+/* The intro and the accordion share the same container (900px) so the
+   heading lines up with the rest of the page. */
+.policies-intro,
+.faq-page {
+  max-width: 900px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .policies-intro {
-  max-width: 46rem;
-  margin: 0 0 72px;
+  margin-bottom: 72px;
 }
 
 .policies-intro .eyebrow {
@@ -80,14 +88,37 @@
   max-width: 40em;
 }
 
+/* FAQ layout ------------------------------------------------------------
+   The accordion sits on the left and the filter illustration on the right.
+   They share the 900px container established above. */
+
+.faq-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.faq-page {
+  min-width: 0;
+}
+
+.faq-side {
+  position: sticky;
+  top: 96px;
+}
+
+.faq-side__img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 30px 70px -30px rgba(35, 31, 28, 0.5);
+}
+
 /* Accordion wrapper -----------------------------------------------------
    The .faq__list, .faq__trigger and .faq__answer rules come from
    app/landing.css. This only constrains the list to a readable measure
    below the intro. */
-
-.faq-page {
-  max-width: 900px;
-}
 
 /* Footer tweaks ---------------------------------------------------------
    The footer markup reuses the landing page's .site-footer blocks; only
@@ -107,6 +138,17 @@
 }
 
 /* Responsive ----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .faq-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .faq-side {
+    position: static;
+  }
+}
 
 @media (max-width: 620px) {
   .policies-main {
