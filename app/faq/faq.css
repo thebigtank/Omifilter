@@ -1,0 +1,119 @@
+/* ==========================================================================
+   OmiFilter — FAQ page
+   Mirrors the /policies page (app/policies/policies.css) for the slim sticky
+   bar, page frame and dark footer, so every secondary page reads as one
+   system. The accordion items themselves reuse the global .faq* rules from
+   app/landing.css (imported once by the root layout); this sheet only shapes
+   the page around them.
+   ========================================================================== */
+
+/* Slim sticky bar ------------------------------------------------------ */
+
+.policies-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250, 246, 240, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.policies-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+  padding: 14px var(--gutter);
+}
+
+.policies-bar__wordmark {
+  font-family: var(--serif);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.policies-bar__wordmark em {
+  color: var(--teal);
+  font-style: italic;
+}
+
+.policies-bar__wordmark:hover {
+  color: var(--teal);
+}
+
+.policies-bar .btn {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* Page frame ----------------------------------------------------------- */
+
+.policies-main {
+  padding: 104px var(--gutter) 128px;
+}
+
+.policies-intro {
+  max-width: 46rem;
+  margin: 0 0 72px;
+}
+
+.policies-intro .eyebrow {
+  margin: 0 0 22px;
+}
+
+.policies-intro__title {
+  font-size: clamp(40px, 5vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.policies-intro__lede {
+  margin: 24px 0 0;
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--ink-3);
+  max-width: 40em;
+}
+
+/* Accordion wrapper -----------------------------------------------------
+   The .faq__list, .faq__trigger and .faq__answer rules come from
+   app/landing.css. This only constrains the list to a readable measure
+   below the intro. */
+
+.faq-page {
+  max-width: 900px;
+}
+
+/* Footer tweaks ---------------------------------------------------------
+   The footer markup reuses the landing page's .site-footer blocks; only
+   the no-CTA layout needs the same shaping as the /policies footer. */
+
+.policies-footer .site-footer__inner {
+  padding-top: 56px;
+  padding-bottom: 32px;
+}
+
+.policies-footer .site-footer__brand {
+  max-width: 34em;
+}
+
+.policies-footer .site-footer__desc {
+  max-width: 40rem;
+}
+
+/* Responsive ----------------------------------------------------------- */
+
+@media (max-width: 620px) {
+  .policies-main {
+    padding: 64px var(--gutter) 80px;
+  }
+
+  .policies-intro {
+    margin-bottom: 48px;
+  }
+}
