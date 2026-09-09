@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import "./faq.css";
+import SiteHeader from "../SiteHeader";
 import { FaqList } from "./faq-list";
 
 export const metadata: Metadata = {
@@ -88,16 +89,7 @@ const faqs = [
 export default function FaqPage() {
   return (
     <>
-      <header className="policies-bar">
-        <div className="shell policies-bar__inner">
-          <Link href="/" className="policies-bar__wordmark">
-            Omi<em>Filter</em>
-          </Link>
-          <Link href="/#order" className="btn btn--teal">
-            Order OmiFilter
-          </Link>
-        </div>
-      </header>
+      <SiteHeader variant="page" />
 
       <main className="policies-main">
         <div className="shell">

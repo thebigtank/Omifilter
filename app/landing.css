@@ -51,7 +51,10 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Smooth scrolling is handled by Lenis (see app/SiteChrome.tsx), which
+     drives the native scroll — so the CSS `scroll-behavior` is turned off
+     to avoid competing with it. */
+  scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -146,6 +149,44 @@ button {
   padding-top: 0;
 }
 
+/* Back-to-top ----------------------------------------------------------
+   A floating button pinned to the bottom-right. Hidden until the user has
+   scrolled (see app/SiteChrome.tsx), then revealed. */
+
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background: var(--ink);
+  color: var(--cream);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 12px 26px -12px rgba(35, 31, 28, 0.5);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease,
+    background-color 0.2s ease;
+}
+
+.back-to-top[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--teal);
+}
+
 /* `.btn` is used on both <a> and <button>, so it has to clear the UA
    button defaults (2px outset border, native appearance, default cursor). */
 .btn {
@@ -188,21 +229,38 @@ button {
   color: #fff;
 }
 
-/* Header -------------------------------------------------------------- */
+/* Header --------------------------------------------------------------
+   The bar is full-bleed and sticky; the .shell inner wrapper applies the
+   gutter at the viewport edges and aligns the content to the site column.
+   It hides on scroll-down and reveals on scroll-up (see app/SiteChrome.tsx,
+   which toggles data-scroll-direction on <html>). */
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
+  background: rgba(250, 246, 240, 0.72);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease;
+}
+
+/* Gutter sits at the extreme viewport edges, on this full-bleed element,
+   so content aligns with the site content area. */
+.site-header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   padding: 14px var(--gutter);
-  background: rgba(250, 246, 240, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+}
+
+/* Hide on scroll down, reveal on scroll up. Scoped to the outer header only,
+   never the inner content. */
+[data-scroll-direction="down"] .site-header {
+  transform: translateY(-100%);
 }
 
 .wordmark {
@@ -210,6 +268,7 @@ button {
   font-size: 24px;
   letter-spacing: -0.01em;
   color: var(--ink);
+  display: inline-block;
 }
 
 .wordmark em {
@@ -222,6 +281,22 @@ button {
   gap: 28px;
   font-size: 14px;
   letter-spacing: 0.02em;
+}
+
+.site-nav__link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.site-nav__link:hover {
+  color: var(--ink);
 }
 
 .site-nav a:not(.btn) {
@@ -290,13 +365,16 @@ button {
 /* Hero ---------------------------------------------------------------- */
 
 .hero {
+  /* Full-bleed section: the gutter sits at the viewport edge here, and the
+     grid is constrained to the site column by the inner .shell wrapper. */
+  padding: 88px var(--gutter) 96px;
+}
+
+.hero__inner {
   display: grid;
   grid-template-columns: 1.02fr 1fr;
   align-items: center;
   gap: 56px;
-  padding: 88px var(--gutter) 96px;
-  max-width: var(--shell);
-  margin: 0 auto;
 }
 
 .hero__badge {
@@ -1709,9 +1787,12 @@ body.modal-open {
   }
 
   .hero {
+    padding: 56px var(--gutter) 72px;
+  }
+
+  .hero__inner {
     grid-template-columns: 1fr;
     gap: 44px;
-    padding: 56px var(--gutter) 72px;
   }
 
   .hero__media {
@@ -1756,10 +1837,13 @@ body.modal-open {
     pointer-events: auto;
   }
 
-  .site-nav a {
+  .site-nav a,
+  .site-nav__link {
     padding: 14px 0;
     font-size: 16px;
     border-bottom: 1px solid var(--line);
+    text-align: left;
+    width: 100%;
   }
 
   .site-nav .btn {

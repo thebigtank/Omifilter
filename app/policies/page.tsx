@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./policies.css";
+import SiteHeader from "../SiteHeader";
 
 export const metadata: Metadata = {
   title: "Policies — OmiFilter",
@@ -11,16 +12,7 @@ export const metadata: Metadata = {
 export default function PoliciesPage() {
   return (
     <>
-      <header className="policies-bar">
-        <div className="shell policies-bar__inner">
-          <Link href="/" className="policies-bar__wordmark">
-            Omi<em>Filter</em>
-          </Link>
-          <Link href="/#order" className="btn btn--teal">
-            Order OmiFilter
-          </Link>
-        </div>
-      </header>
+      <SiteHeader variant="page" />
 
       <main className="policies-main">
         <div className="shell">

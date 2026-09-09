@@ -12,10 +12,16 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(250, 246, 240, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(250, 246, 240, 0.72);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
   border-bottom: 1px solid var(--line);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hide on scroll down, reveal on scroll up (see app/SiteChrome.tsx). */
+[data-scroll-direction="down"] .checkout-bar {
+  transform: translateY(-100%);
 }
 
 .checkout-bar__inner {

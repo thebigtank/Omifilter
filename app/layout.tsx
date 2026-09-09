@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Newsreader, Josefin_Sans, IBM_Plex_Mono } from "next/font/google";
+import SiteChrome from "./SiteChrome";
 import "./landing.css";
 
 const newsreader = Newsreader({
@@ -38,7 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${newsreader.variable} ${josefinSans.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        <SiteChrome>{children}</SiteChrome>
+      </body>
     </html>
   );
 }

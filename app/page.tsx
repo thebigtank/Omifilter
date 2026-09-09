@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import WaterCanvas from "./WaterCanvas";
+import SiteHeader from "./SiteHeader";
 import { tiers, titleCase } from "./tiers";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -298,7 +299,6 @@ const basketProps = {
 
 export default function Home() {
   const [part, setPart] = useState(0);
-  const [navOpen, setNavOpen] = useState(false);
 
   // Order modal: `front` is the tier currently at the front of the fan.
   // Defaults to 1 — the featured Family Pack.
@@ -315,7 +315,6 @@ export default function Home() {
 
   const openOrder = useCallback(() => {
     lastFocused.current = document.activeElement as HTMLElement | null;
-    setNavOpen(false);
     setOrderOpen(true);
   }, []);
 
@@ -362,45 +361,11 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: REVEAL_BOOT_SCRIPT }}
       />
 
-      <header className="site-header">
-        <div className="wordmark">
-          Omi<em>Filter</em>
-        </div>
-        <nav className="site-nav" data-open={navOpen}>
-          <a href="#filter" onClick={() => setNavOpen(false)}>
-            The filter
-          </a>
-          <a href="#water" onClick={() => setNavOpen(false)}>
-            Your water
-          </a>
-          <a href="#install" onClick={() => setNavOpen(false)}>
-            Install
-          </a>
-          <Link href="/faq" onClick={() => setNavOpen(false)}>
-            FAQ
-          </Link>
-          <button
-            type="button"
-            className="btn btn--teal"
-            onClick={openOrder}
-          >
-            <ShoppingBasket {...basketProps} />
-            Order
-          </button>
-        </nav>
-        <button
-          type="button"
-          className="nav-toggle"
-          aria-expanded={navOpen}
-          aria-label="Toggle navigation"
-          onClick={() => setNavOpen((open) => !open)}
-        >
-          <span />
-        </button>
-      </header>
+      <SiteHeader variant="home" onOrder={openOrder} />
 
       <main>
         <section className="hero" id="hero">
+          <div className="shell hero__inner">
           <div>
             <Reveal className="hero__badge">
               <span className="hero__dot" />
@@ -455,6 +420,7 @@ export default function Home() {
               <div className="hero__tag-label">Model</div>
               <div className="hero__tag-value">Dual Ceramic Composite</div>
             </div>
+          </div>
           </div>
         </section>
 
