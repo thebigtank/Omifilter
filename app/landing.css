@@ -1785,6 +1785,12 @@ body.modal-open {
     --gutter: 20px;
   }
 
+  /* On mobile the header stays pinned: never hide it on scroll-down. The bar
+     remains sticky (position: sticky; top: 0) so it's always on screen. */
+  [data-scroll-direction="down"] .site-header {
+    transform: none;
+  }
+
   .hero {
     padding: 56px var(--gutter) 72px;
   }
