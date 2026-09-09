@@ -600,7 +600,7 @@ button {
 
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -1526,27 +1526,6 @@ body.modal-open {
   font-weight: 500;
 }
 
-.membership-card__punch {
-  display: flex;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--line-2);
-}
-
-.membership-card__hole {
-  display: block;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-}
-
-.membership-card__hole--on {
-  background-color: var(--teal);
-  border-color: var(--teal);
-}
-
 .membership-card--featured .membership-card__row,
 .membership-card--featured .membership-card__units {
   color: var(--dark-fg-3);
@@ -1554,19 +1533,6 @@ body.modal-open {
 
 .membership-card--featured .membership-card__save {
   color: var(--dark-fg);
-}
-
-.membership-card--featured .membership-card__punch {
-  border-top-color: var(--dark-line);
-}
-
-.membership-card--featured .membership-card__hole {
-  border-color: var(--dark-line);
-}
-
-.membership-card--featured .membership-card__hole--on {
-  background-color: var(--teal-pale);
-  border-color: var(--teal-pale);
 }
 
 .membership-card__tab {
@@ -1702,8 +1668,7 @@ body.modal-open {
     margin: 0;
   }
 
-  .membership-card__barcode,
-  .membership-card__punch {
+  .membership-card__barcode {
     display: none;
   }
 
@@ -1725,6 +1690,10 @@ body.modal-open {
   .symptoms {
     grid-template-columns: 1fr;
     gap: 44px;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .contaminants__head {
@@ -1809,6 +1778,10 @@ body.modal-open {
 @media (max-width: 620px) {
   body {
     font-size: 16px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
   }
 
   .cost__row {
