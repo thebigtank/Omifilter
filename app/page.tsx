@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import WaterCanvas from "./WaterCanvas";
+import { tiers, titleCase } from "./tiers";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Biohazard,
@@ -262,36 +264,6 @@ const steps = [
   },
 ];
 
-const tiers = [
-  {
-    tier: "Tier 01",
-    flag: "OMW·0421",
-    name: "Single unit",
-    price: "₦28,999",
-    units: "1 filter unit",
-    note: "Kitchen tap protection.",
-    feature: false,
-  },
-  {
-    tier: "Tier 02",
-    flag: "Most popular",
-    name: "Family pack",
-    price: "₦57,999",
-    units: "2 filter units",
-    note: "Kitchen and bathroom covered.",
-    feature: true,
-  },
-  {
-    tier: "Tier 03",
-    flag: "OMW·0421",
-    name: "Full home",
-    price: "₦78,000",
-    units: "3 filter units",
-    note: "Save ₦8,997 — every tap covered.",
-    feature: false,
-  },
-];
-
 // The annual cost of the alternatives, against one filter bought once.
 const costs = [
   {
@@ -351,6 +323,18 @@ export default function Home() {
     setOrderOpen(false);
     lastFocused.current?.focus();
   }, []);
+
+  const router = useRouter();
+
+  const goCheckout = useCallback(
+    (slug: string) => {
+      // Don't setOrderOpen(false) here — it would repaint the home page behind
+      // the modal before the route transition lands, causing a visible flash.
+      // The modal unmounts with the home page when the new route mounts.
+      router.push(`/checkout/${slug}`);
+    },
+    [router],
+  );
 
   // Lock body scroll, close on Escape, and move focus into the dialog.
   useEffect(() => {
@@ -760,10 +744,14 @@ export default function Home() {
                   <div className="tier__price">{t.price}</div>
                   <div className="tier__units">{t.units}</div>
                   <div className="tier__note">{t.note}</div>
-                  <a href="#" className="tier__cta">
+                  <button
+                    type="button"
+                    className="tier__cta"
+                    onClick={() => goCheckout(t.slug)}
+                  >
                     <ShoppingBasket {...basketProps} />
-                    Order on WhatsApp →
-                  </a>
+                    Order {t.name} →
+                  </button>
                 </Reveal>
               ))}
             </div>
@@ -897,26 +885,20 @@ export default function Home() {
                     <span className="membership-card__price">{t.price}</span>
                     <span className="membership-card__units">{t.units}</span>
                     <span className="membership-card__save">{t.note}</span>
-                    <span className="membership-card__punch" aria-hidden="true">
-                      {Array.from({ length: 5 }, (_, h) => (
-                        <span
-                          key={h}
-                          className={`membership-card__hole${
-                            h < 3 + i ? " membership-card__hole--on" : ""
-                          }`}
-                        />
-                      ))}
-                    </span>
                   </button>
                 );
               })}
             </div>
 
             <div className="modal__cta">
-              <a href="#" className="btn btn--teal">
+              <button
+                type="button"
+                className="modal__order"
+                onClick={() => goCheckout(tiers[front].slug)}
+              >
                 <ShoppingBasket {...basketProps} />
-                Order {tiers[front].name} →
-              </a>
+                Order {titleCase(tiers[front].name)} Now
+              </button>
               <p className="modal__fineprint">
                 No payment on delivery · Shipping ₦5,000 · 30-day money-back
                 guarantee

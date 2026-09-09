@@ -1,0 +1,69 @@
+/* ==========================================================================
+   OmiFilter — Thank-you page
+   ========================================================================== */
+
+.thanks {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 96px var(--gutter);
+}
+
+.thanks__inner {
+  max-width: 40rem;
+  text-align: center;
+}
+
+.thanks__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 0 28px;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.thanks .eyebrow {
+  margin: 0 0 18px;
+}
+
+.thanks__title {
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.thanks__lede {
+  margin: 24px 0 0;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-3);
+  max-width: 34em;
+  margin-inline: auto;
+}
+
+.thanks__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.thanks__actions .btn {
+  padding: 16px 32px;
+  font-size: 16px;
+}
+
+@media (max-width: 620px) {
+  .thanks__actions .btn {
+    width: 100%;
+  }
+}
