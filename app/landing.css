@@ -1232,6 +1232,29 @@ button {
   user-select: none;
 }
 
+/* Footer meta / legal links -------------------------------------------- */
+
+.site-footer__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px 24px;
+  flex-wrap: wrap;
+}
+
+.site-footer__meta .site-footer__attrib {
+  margin: 0;
+}
+
+.site-footer__meta a {
+  font-size: 13px;
+  color: var(--dark-fg-3);
+  text-decoration: none;
+}
+
+.site-footer__meta a:hover {
+  color: var(--dark-fg);
+}
+
 /* Order modal ---------------------------------------------------------
    Fanned credit-card tiers ported from the previous build, restyled to the
    cream/ink palette. Clicking a card brings it to the front of the fan. */

@@ -809,9 +809,12 @@ export default function Home() {
             <p className="site-footer__copy">
               © 2026 OmiFilter Nigeria. All rights reserved.
             </p>
-            <p className="site-footer__attrib">
-              Delivering to Lagos · Abuja · Port Harcourt
-            </p>
+            <nav className="site-footer__meta" aria-label="Site">
+              <p className="site-footer__attrib">
+                Delivering to Lagos · Abuja · Port Harcourt
+              </p>
+              <Link href="/policies">Policies</Link>
+            </nav>
           </div>
         </div>
 
