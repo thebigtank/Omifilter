@@ -21,6 +21,16 @@ type PaystackPop = {
   }) => { openIframe: () => void };
 };
 
+/**
+ * Paystack public key, used to start the inline payment popup
+ * (js.paystack.co/v1/inline.js). This is a *public* key Paystack requires in
+ * the browser, so it's safe to ship in the client bundle. It's defined here in
+ * code (not `next/env`) because this build wasn't inlining the env var at
+ * build time, which made the popup fail with "Could not start this
+ * transaction."
+ */
+const PAYSTACK_PUBLIC_KEY = "pk_test_e1e0f359eb3fec37797dcd197bf009ea600ed234";
+
 const NIGERIAN_STATES = [
   "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
   "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT",
@@ -93,7 +103,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
 
     setPaying(true);
     paystack.setup({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
+      key: PAYSTACK_PUBLIC_KEY,
       email,
       amount: qtyPriceKobo,
       currency: "NGN",
