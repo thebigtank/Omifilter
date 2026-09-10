@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useLenis } from "lenis/react";
 import { ShoppingBasket } from "lucide-react";
@@ -39,6 +39,7 @@ export default function SiteHeader({
   onOrder,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const lenis = useLenis();
   const [navOpen, setNavOpen] = useState(false);
 
@@ -58,11 +59,11 @@ export default function SiteHeader({
           }
         }
       } else {
-        window.location.hash = hash;
+        router.push(`/${hash}`);
       }
       close();
     },
-    [lenis, pathname, close],
+    [lenis, pathname, router, close],
   );
 
   return (
