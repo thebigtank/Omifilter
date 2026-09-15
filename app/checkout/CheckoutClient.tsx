@@ -1,11 +1,11 @@
 "use client";
 
-import Script from "next/script";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { ShoppingBasket, ShieldCheck } from "lucide-react";
 import { titleCase, type Tier } from "../tiers";
+import TurnstileWidget from "../TurnstileWidget";
 
 /** Minimal shape of the Paystack inline payment global loaded by checkout.js. */
 type PaystackPop = {
@@ -28,8 +28,11 @@ type PaystackPop = {
  * code (not `next/env`) because this build wasn't inlining the env var at
  * build time, which made the popup fail with "Could not start this
  * transaction."
+ *
+ * MUST be the same mode (test/live) as the server's PAYSTACK_SECRET_KEY, or
+ * Paystack rejects the checkout request outright.
  */
-const PAYSTACK_PUBLIC_KEY = "pk_test_e1e0f359eb3fec37797dcd197bf009ea600ed234";
+const PAYSTACK_PUBLIC_KEY = "pk_live_049b22426338e664609e45847ad524c531551e53";
 
 const NIGERIAN_STATES = [
   "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
@@ -63,6 +66,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
   const [error, setError] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
   const [qty, setQty] = useState(1);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   // Paystack charges the per-unit price × quantity, in kobo.
   const qtyPriceKobo = tier.priceKobo * qty;
@@ -74,7 +78,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
     [],
   );
 
-  const buyNow = useCallback(() => {
+  const buyNow = useCallback(async () => {
     setError(null);
 
     const email = form.email.trim();
@@ -94,6 +98,10 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
       setError("Enter your delivery address and state.");
       return;
     }
+    if (!turnstileToken) {
+      setError("Please complete the verification check.");
+      return;
+    }
 
     const paystack = (window as unknown as { PaystackPop?: PaystackPop }).PaystackPop;
     if (!paystack) {
@@ -101,13 +109,46 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
       return;
     }
 
+    const reference = `OMW-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+
     setPaying(true);
+
+    try {
+      const startRes = await fetch("/api/checkout/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference,
+          tierSlug: tier.slug,
+          qty,
+          email,
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          phone: form.phone.trim(),
+          address: form.address.trim(),
+          state: form.state,
+          turnstileToken,
+        }),
+      });
+
+      if (!startRes.ok) {
+        const data = await startRes.json().catch(() => null);
+        setError(data?.reason || "Couldn't start checkout — try again in a moment.");
+        setPaying(false);
+        return;
+      }
+    } catch {
+      setError("Couldn't start checkout — try again in a moment.");
+      setPaying(false);
+      return;
+    }
+
     paystack.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email,
       amount: qtyPriceKobo,
       currency: "NGN",
-      ref: `OMW-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
+      ref: reference,
       metadata: {
         custom_fields: [
           {
@@ -122,23 +163,49 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
           },
         ],
       },
-      callback: () => {
-        setPaying(false);
-        router.push(`/thank-you/${tier.slug}`);
+      // NOTE: must be a *plain* (non-async) function. Paystack's inline.js
+      // validates it with `{}.toString.call(fn) === "[object Function]"`, and
+      // an async function reports "[object AsyncFunction]", which makes
+      // setup() throw "Attribute callback must be a valid function" before it
+      // ever opens the popup. Do the async work in an inner IIFE instead.
+      callback: (response) => {
+        const ref = response.reference || response.trxref || reference;
+
+        void (async () => {
+          try {
+            const verifyRes = await fetch("/api/checkout/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ reference: ref }),
+            });
+            const data = await verifyRes.json().catch(() => null);
+
+            if (!verifyRes.ok || !data?.ok) {
+              setPaying(false);
+              setError(
+                "We couldn't confirm your payment — please contact support before trying again.",
+              );
+              return;
+            }
+
+            setPaying(false);
+            router.push(`/thank-you/${tier.slug}`);
+          } catch {
+            setPaying(false);
+            setError(
+              "We couldn't confirm your payment — please contact support before trying again.",
+            );
+          }
+        })();
       },
       onClose: () => {
         setPaying(false);
       },
     }).openIframe();
-  }, [form, qtyPriceKobo, router, tier]);
+  }, [form, qty, qtyPriceKobo, router, tier, turnstileToken]);
 
   return (
     <>
-      <Script
-        src="https://js.paystack.co/v1/inline.js"
-        strategy="afterInteractive"
-      />
-
       <header className="checkout-bar">
         <div className="shell checkout-bar__inner">
           <Link href="/" className="checkout-bar__wordmark">
@@ -170,6 +237,16 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
                 buyNow();
               }}
             >
+              {/* A plain, non-async <script> tag so it renders as a real DOM
+                  node right here inside the <form> — Paystack's inline.js
+                  requires its own script tag to be a form descendant. Both
+                  next/script (afterInteractive) and a plain `async` script
+                  tag get hoisted into <head> by Next.js/React 19's resource
+                  handling, which breaks that check, so this must stay a
+                  synchronous script tag. */}
+              {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+              <script src="https://js.paystack.co/v1/inline.js" />
+
               <div className="checkout-fields__grid">
                 <label className="field">
                   <span className="field__label">First name</span>
@@ -248,6 +325,8 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
                   </select>
                 </label>
               </div>
+
+              <TurnstileWidget onToken={setTurnstileToken} />
             </form>
 
             {error && (
@@ -260,7 +339,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
               type="button"
               className="btn btn--teal checkout-buy"
               onClick={buyNow}
-              disabled={paying}
+              disabled={paying || !turnstileToken}
             >
               <ShoppingBasket size={18} strokeWidth={1.75} aria-hidden="true" />
               {paying ? "Processing payment…" : "Buy Now"}

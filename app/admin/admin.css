@@ -1,0 +1,143 @@
+/* ==========================================================================
+   OmiFilter — Admin
+   Mirrors the landing page (app/landing.css): same tokens, palette and fonts.
+   ========================================================================== */
+
+.admin-main {
+  padding: 56px var(--gutter) 96px;
+}
+
+.admin-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.admin-header h1 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.2vw, 40px);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.admin-logout {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: none;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-logout:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.admin-empty {
+  color: var(--ink-4);
+  font-size: 15px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  background: var(--cream-2);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-table th {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  background: var(--cream-3);
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.admin-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-badge--paid {
+  background: rgba(44, 106, 135, 0.14);
+  color: var(--teal-dark);
+}
+
+.admin-badge--unpaid {
+  background: rgba(155, 74, 47, 0.12);
+  color: var(--rust);
+}
+
+/* Login card -------------------------------------------------------------- */
+
+.admin-login-main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px var(--gutter);
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 36px;
+  background: var(--cream-2);
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.admin-login-card h1 {
+  font-family: var(--serif);
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+
+.admin-login-card form {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-login-card .field {
+  text-align: left;
+}

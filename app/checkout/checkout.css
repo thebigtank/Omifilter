@@ -158,6 +158,10 @@
   color: var(--ink-5);
 }
 
+.turnstile-widget {
+  margin-top: 4px;
+}
+
 .checkout-error {
   margin: 22px 0 0;
   color: var(--rust);
