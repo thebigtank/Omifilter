@@ -1485,6 +1485,13 @@ body.modal-open {
   color: var(--ink-4);
 }
 
+.modal__fineprint--emphasis {
+  margin-top: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .membership {
   display: flex;
   flex-wrap: wrap;

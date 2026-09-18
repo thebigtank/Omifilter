@@ -369,7 +369,7 @@ export default function Home() {
           <div>
             <Reveal className="hero__badge">
               <span className="hero__dot" />
-              CE certified · Lagos · Abuja · Port Harcourt
+              CE Certified · Nationwide delivery
             </Reveal>
             <Reveal as="h1" className="hero__title" index={1}>
               Clean water,
@@ -669,10 +669,10 @@ export default function Home() {
               <Reveal className="cost__row cost__row--total" index={4}>
                 <div className="cost__label">
                   OmiFilter — bought once
-                  <span>One filter unit, plus ₦5,000 shipping</span>
+                  <span>One filter unit</span>
                 </div>
                 <div className="cost__value">
-                  <CountUp value="₦28,999" />
+                  <CountUp value="₦45,000" />
                 </div>
               </Reveal>
             </div>
@@ -680,7 +680,7 @@ export default function Home() {
             <Reveal as="p" className="cost__verdict" index={5}>
               You spend <strong>₦394,000</strong> a year on water that still
               makes your family sick. OmiFilter costs{" "}
-              <strong>₦28,999 once</strong> — it pays for itself in under a
+              <strong>₦45,000 once</strong> — it pays for itself in under a
               month.
             </Reveal>
           </div>
@@ -691,8 +691,7 @@ export default function Home() {
             <div className="order__head">
               <Reveal as="h2">Choose your protection.</Reveal>
               <Reveal as="p" index={1}>
-                Delivered to Lagos, Abuja and Port Harcourt. No payment on
-                delivery. Shipping ₦5,000.
+                Nationwide delivery. No payment on delivery. Free shipping.
               </Reveal>
             </div>
             <div className="order__grid">
@@ -765,7 +764,7 @@ export default function Home() {
             </p>
             <nav className="site-footer__meta" aria-label="Site">
               <p className="site-footer__attrib">
-                Delivering to Lagos · Abuja · Port Harcourt
+                CE Certified · Nationwide delivery
               </p>
               <Link href="/policies">Policies</Link>
             </nav>
@@ -866,8 +865,10 @@ export default function Home() {
                 Order {titleCase(tiers[front].name)} Now
               </button>
               <p className="modal__fineprint">
-                No payment on delivery · Shipping ₦5,000 · 30-day money-back
-                guarantee
+                No payment on delivery · Free shipping
+              </p>
+              <p className="modal__fineprint modal__fineprint--emphasis">
+                30-day money-back guarantee
               </p>
             </div>
           </div>
