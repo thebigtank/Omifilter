@@ -5,6 +5,8 @@ export type Tier = {
   name: string;
   /** Pre-discount price, shown struck through next to `price`. */
   originalPrice: string;
+  /** Pre-discount price in kobo, for scaling the struck-through price by qty. */
+  originalPriceKobo: number;
   price: string;
   units: string;
   note: string;
@@ -20,6 +22,7 @@ export const tiers: Tier[] = [
     flag: "OMW·0421",
     name: "Starter",
     originalPrice: "₦45,000",
+    originalPriceKobo: 4500000,
     price: "₦34,999",
     units: "1 filter unit",
     note: "Kitchen tap protection.",
@@ -32,6 +35,7 @@ export const tiers: Tier[] = [
     flag: "Most popular",
     name: "Family pack",
     originalPrice: "₦105,000",
+    originalPriceKobo: 10500000,
     price: "₦86,000",
     units: "2 filter units",
     note: "Kitchen and bathroom covered.",
@@ -44,6 +48,7 @@ export const tiers: Tier[] = [
     flag: "OMW·0421",
     name: "Premium",
     originalPrice: "₦170,000",
+    originalPriceKobo: 17000000,
     price: "₦135,000",
     units: "3 filter units",
     note: "Get 1 free — every tap covered.",

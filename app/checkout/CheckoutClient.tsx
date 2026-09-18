@@ -70,6 +70,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
 
   // Paystack charges the per-unit price × quantity, in kobo.
   const qtyPriceKobo = tier.priceKobo * qty;
+  const qtyOriginalPriceKobo = tier.originalPriceKobo * qty;
 
   const set = useCallback(
     (field: keyof FormState) =>
@@ -365,6 +366,13 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
               <span className="membership-card__barcode" aria-hidden="true" />
               <span className="membership-card__name">{tier.name}</span>
               <span className="membership-card__price">
+                <s className="membership-card__price-was">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                    minimumFractionDigits: 0,
+                  }).format(qtyOriginalPriceKobo / 100)}
+                </s>{" "}
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",

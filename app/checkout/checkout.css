@@ -220,6 +220,10 @@
   font-size: 38px;
 }
 
+.checkout-summary .membership-card__price-was {
+  font-size: 20px;
+}
+
 .checkout-summary .membership-card__units {
   font-size: 17px;
 }
@@ -355,6 +359,10 @@
     text-align: left;
     font-size: 30px;
     line-height: 1.1;
+  }
+
+  .checkout-summary .membership-card__price-was {
+    font-size: 16px;
   }
 
   .checkout-summary .membership-card__units,
