@@ -3,11 +3,13 @@ export type Tier = {
   tier: string;
   flag: string;
   name: string;
+  /** Pre-discount price, shown struck through next to `price`. */
+  originalPrice: string;
   price: string;
   units: string;
   note: string;
   feature: boolean;
-  /** Paystack charges in kobo (smallest unit), so this is ₦ × 100. */
+  /** Paystack charges in kobo (smallest unit), so this is the discounted ₦ × 100. */
   priceKobo: number;
 };
 
@@ -17,33 +19,36 @@ export const tiers: Tier[] = [
     tier: "Tier 01",
     flag: "OMW·0421",
     name: "Starter",
-    price: "₦45,000",
+    originalPrice: "₦45,000",
+    price: "₦34,999",
     units: "1 filter unit",
     note: "Kitchen tap protection.",
     feature: false,
-    priceKobo: 4500000,
+    priceKobo: 3499900,
   },
   {
     slug: "family",
     tier: "Tier 02",
     flag: "Most popular",
     name: "Family pack",
-    price: "₦105,000",
+    originalPrice: "₦105,000",
+    price: "₦86,000",
     units: "2 filter units",
     note: "Kitchen and bathroom covered.",
     feature: true,
-    priceKobo: 10500000,
+    priceKobo: 8600000,
   },
   {
     slug: "full-home",
     tier: "Tier 03",
     flag: "OMW·0421",
     name: "Premium",
-    price: "₦170,000",
+    originalPrice: "₦170,000",
+    price: "₦135,000",
     units: "3 filter units",
     note: "Get 1 free — every tap covered.",
     feature: false,
-    priceKobo: 17000000,
+    priceKobo: 13500000,
   },
 ];
 

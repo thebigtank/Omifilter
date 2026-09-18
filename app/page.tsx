@@ -672,7 +672,7 @@ export default function Home() {
                   <span>One filter unit</span>
                 </div>
                 <div className="cost__value">
-                  <CountUp value="₦45,000" />
+                  <CountUp value="₦34,999" />
                 </div>
               </Reveal>
             </div>
@@ -680,7 +680,7 @@ export default function Home() {
             <Reveal as="p" className="cost__verdict" index={5}>
               You spend <strong>₦394,000</strong> a year on water that still
               makes your family sick. OmiFilter costs{" "}
-              <strong>₦45,000 once</strong> — it pays for itself in under a
+              <strong>₦34,999 once</strong> — it pays for itself in under a
               month.
             </Reveal>
           </div>
@@ -706,7 +706,9 @@ export default function Home() {
                     <span>{t.flag}</span>
                   </div>
                   <h3>{t.name}</h3>
-                  <div className="tier__price">{t.price}</div>
+                  <div className="tier__price">
+                    <s className="tier__price-was">{t.originalPrice}</s> {t.price}
+                  </div>
                   <div className="tier__units">{t.units}</div>
                   <div className="tier__note">{t.note}</div>
                   <button
@@ -847,7 +849,9 @@ export default function Home() {
                     </span>
                     <span className="membership-card__barcode" aria-hidden="true" />
                     <span className="membership-card__name">{t.name}</span>
-                    <span className="membership-card__price">{t.price}</span>
+                    <span className="membership-card__price">
+                      <s className="membership-card__price-was">{t.originalPrice}</s> {t.price}
+                    </span>
                     <span className="membership-card__units">{t.units}</span>
                     <span className="membership-card__save">{t.note}</span>
                   </button>

@@ -1044,6 +1044,14 @@ button {
   letter-spacing: -0.02em;
 }
 
+.tier__price-was {
+  font-size: 22px;
+  font-weight: 400;
+  opacity: 0.5;
+  text-decoration-color: var(--rust);
+  margin-right: 4px;
+}
+
 .tier__units {
   font-size: 15px;
   opacity: 0.8;
@@ -1594,6 +1602,13 @@ body.modal-open {
   font-size: 27px;
   line-height: 1.1;
   letter-spacing: -0.02em;
+}
+
+.membership-card__price-was {
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0.5;
+  margin-right: 3px;
 }
 
 .membership-card__units {
