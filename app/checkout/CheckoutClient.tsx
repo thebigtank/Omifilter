@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ShoppingBasket, ShieldCheck } from "lucide-react";
 import { titleCase, type Tier } from "../tiers";
 import TurnstileWidget from "../TurnstileWidget";
+import { trackPixelEvent } from "../lib/fbPixel";
 
 /** Minimal shape of the Paystack inline payment global loaded by checkout.js. */
 type PaystackPop = {
@@ -71,6 +72,18 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
   // Paystack charges the per-unit price × quantity, in kobo.
   const qtyPriceKobo = tier.priceKobo * qty;
   const qtyOriginalPriceKobo = tier.originalPriceKobo * qty;
+
+  useEffect(() => {
+    trackPixelEvent("InitiateCheckout", {
+      value: tier.priceKobo / 100,
+      currency: "NGN",
+      content_name: tier.name,
+      content_ids: [tier.slug],
+      content_type: "product",
+    });
+    // Fire once when the checkout page is reached, not on every qty change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const set = useCallback(
     (field: keyof FormState) =>
@@ -190,7 +203,12 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
             }
 
             setPaying(false);
-            router.push(`/thank-you/${tier.slug}`);
+            const params = new URLSearchParams({
+              value: String(qtyPriceKobo / 100),
+              qty: String(qty),
+              ref,
+            });
+            router.push(`/thank-you/${tier.slug}?${params.toString()}`);
           } catch {
             setPaying(false);
             setError(

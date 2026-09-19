@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTier, titleCase } from "../../tiers";
+import ThankYouPixel from "../ThankYouPixel";
 import "../thank-you.css";
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ value?: string; qty?: string; ref?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -20,13 +22,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ThankYouPage({ params }: Props) {
+export default async function ThankYouPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { value, qty, ref } = await searchParams;
   const tier = getTier(slug);
   if (!tier) notFound();
 
   return (
     <main className="thanks">
+      <ThankYouPixel
+        slug={tier.slug}
+        name={tier.name}
+        value={Number(value) || 0}
+        qty={Number(qty) || 1}
+        orderRef={ref || ""}
+      />
       <div className="shell thanks__inner">
         <div className="thanks__badge" aria-hidden="true">
           ✓
