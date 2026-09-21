@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-export type Faq = { title: string; body: string };
+export type Faq = { title: string; body: ReactNode };
 
 /**
  * Interactive FAQ accordion — the same open/close behaviour as the home page's

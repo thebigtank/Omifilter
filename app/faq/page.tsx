@@ -11,10 +11,28 @@ export const metadata: Metadata = {
     "Answers to the questions Nigerian families ask before they order OmiFilter — tap fit, E. coli removal, delivery to all 36 states, cartridges and the 30-day money-back guarantee.",
 };
 
+/** OmiFilter's customer care WhatsApp/phone line. */
+const WHATSAPP_DISPLAY = "0916 311 7468";
+const WHATSAPP_HREF = "https://wa.me/2349163117468";
+
+function WhatsAppLink() {
+  return (
+    <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
+      WhatsApp ({WHATSAPP_DISPLAY})
+    </a>
+  );
+}
+
 const faqs = [
   {
     title: "Will this fit my tap?",
-    body: "It fits standard Nigerian kitchen and bathroom taps with a threaded aerator opening, which covers the large majority of homes in Lagos, Abuja and Port Harcourt. If you are unsure, send a photo of your tap on WhatsApp and we will confirm before you order.",
+    body: (
+      <>
+        It fits standard Nigerian kitchen and bathroom taps with a threaded aerator opening, which
+        covers the large majority of homes in Nigeria. If you are unsure,
+        send a photo of your tap on <WhatsAppLink /> and we will confirm before you order.
+      </>
+    ),
   },
   {
     title: "Does it remove E. coli?",
@@ -30,7 +48,13 @@ const faqs = [
   },
   {
     title: "What if it does not work for me?",
-    body: "Thirty-day satisfaction guarantee. If your water does not visibly improve within thirty days, message us on WhatsApp for a full refund. We are a Nigerian family business and our reputation is the product.",
+    body: (
+      <>
+        Thirty-day satisfaction guarantee. If your water does not visibly improve within thirty
+        days, message us on <WhatsAppLink /> for a full refund. We are a Nigerian family business
+        and our reputation is the product.
+      </>
+    ),
   },
   {
     title: "Can I use it for cooking water?",
@@ -38,15 +62,36 @@ const faqs = [
   },
   {
     title: "Is OmiFilter a scam? How do I know it is legit?",
-    body: "Completely fair to ask. OmiFilter is a registered Nigerian business, the filter is CE certified, and every order carries a 30-day money-back guarantee — a full refund if you are not satisfied. Real Nigerian families use it every day; message us on WhatsApp if you would like to talk it through before you order.",
+    body: (
+      <>
+        Completely fair to ask. OmiFilter is a registered Nigerian business, the filter is CE
+        certified, and every order carries a 30-day money-back guarantee — a full refund if you
+        are not satisfied. Real Nigerian families use it every day; message us on <WhatsAppLink />{" "}
+        if you would like to talk it through before you order.
+      </>
+    ),
   },
   {
     title: "Why do I have to pay before delivery?",
-    body: "We do not offer cash on delivery — it is how delivery scams run in Nigeria, against buyers as much as sellers. Your protection is the 30-day money-back guarantee: if your filter does not arrive, or does not perform as described, we refund every naira. Message us first if you want to verify us or speak to a customer before you pay anything.",
+    body: (
+      <>
+        We do not offer cash on delivery — it is how delivery scams run in Nigeria, against buyers
+        as much as sellers. Your protection is the 30-day money-back guarantee: if your filter does
+        not arrive, or does not perform as described, we refund every naira. Message us first on{" "}
+        <WhatsAppLink /> if you want to verify us or speak to a customer before you pay anything.
+      </>
+    ),
   },
   {
     title: "Do you deliver to my state? How long does it take?",
-    body: "Yes — we deliver to all 36 states and the FCT. After dispatch: Lagos in 2 to 3 business days; Abuja, Port Harcourt, Warri and Ibadan in 3 to 5; every other state in 5 to 10, depending on location. Every order gets a tracking number by WhatsApp or email, and the full timelines are on our Policies page.",
+    body: (
+      <>
+        Yes — we deliver to all 36 states and the FCT. After dispatch: Lagos in 2 to 3 business
+        days; Abuja, Port Harcourt, Warri and Ibadan in 3 to 5; every other state in 5 to 10,
+        depending on location. Every order gets a tracking number by <WhatsAppLink /> or email, and
+        the full timelines are on our Policies page.
+      </>
+    ),
   },
   {
     title: "What if the filter arrives damaged?",
@@ -70,11 +115,23 @@ const faqs = [
   },
   {
     title: "Where do I get replacement cartridges?",
-    body: "Directly from us. Message us on WhatsApp and we will deliver replacements to your location; we keep cartridges in stock so your protection is never interrupted. Swapping one takes seconds — no plumber, no tools.",
+    body: (
+      <>
+        Directly from us. Message us on <WhatsAppLink /> and we will deliver replacements to your
+        location; we keep cartridges in stock so your protection is never interrupted. Swapping one
+        takes seconds — no plumber, no tools.
+      </>
+    ),
   },
   {
     title: "Do you offer bulk pricing for a shop or office?",
-    body: "Yes. If you need to cover many taps — offices, salons, restaurants, small businesses — message us on WhatsApp for a bulk quote. For larger institutional orders like churches, schools or hospitals we make special arrangements.",
+    body: (
+      <>
+        Yes. If you need to cover many taps — offices, salons, restaurants, small businesses —
+        message us on <WhatsAppLink /> for a bulk quote. For larger institutional orders like
+        churches, schools or hospitals we make special arrangements.
+      </>
+    ),
   },
   {
     title: "Is this the same as the cheap filters sold in the market?",
@@ -101,7 +158,7 @@ export default function FaqPage() {
             <p className="policies-intro__lede">
               Everything Nigerian families ask before they order — tap fit, E. coli
               removal, delivery to all 36 states and the FCT, cartridges and the
-              30-day money-back guarantee. Still not sure? Message us on WhatsApp
+              30-day money-back guarantee. Still not sure? Message us on <WhatsAppLink />{" "}
               before you order.
             </p>
           </header>
