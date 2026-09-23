@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ShoppingBasket, ShieldCheck } from "lucide-react";
 import { titleCase, type Tier } from "../tiers";
 import TurnstileWidget from "../TurnstileWidget";
@@ -34,6 +34,8 @@ type PaystackPop = {
  * Paystack rejects the checkout request outright.
  */
 const PAYSTACK_PUBLIC_KEY = "pk_live_049b22426338e664609e45847ad524c531551e53";
+
+const PAYSTACK_INLINE_SRC = "https://js.paystack.co/v1/inline.js";
 
 const NIGERIAN_STATES = [
   "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
@@ -68,10 +70,27 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
   const [paying, setPaying] = useState(false);
   const [qty, setQty] = useState(1);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Paystack charges the per-unit price × quantity, in kobo.
   const qtyPriceKobo = tier.priceKobo * qty;
   const qtyOriginalPriceKobo = tier.originalPriceKobo * qty;
+
+  // Load Paystack's inline.js by appending a real <script> inside the <form>
+  // (inline.js expects its script tag to be a form descendant). It can't be a
+  // JSX <script>: React only runs those on a full page load. When the page is
+  // reached by client-side navigation (the home page's router.push), React
+  // inserts the tag inert, PaystackPop never loads, and Buy Now fails with
+  // "Payment is still loading".
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form || "PaystackPop" in window || form.querySelector(`script[src="${PAYSTACK_INLINE_SRC}"]`)) {
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = PAYSTACK_INLINE_SRC;
+    form.appendChild(script);
+  }, []);
 
   useEffect(() => {
     trackPixelEvent("InitiateCheckout", {
@@ -250,22 +269,13 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
             </p>
 
             <form
+              ref={formRef}
               className="checkout-fields"
               onSubmit={(e) => {
                 e.preventDefault();
                 buyNow();
               }}
             >
-              {/* A plain, non-async <script> tag so it renders as a real DOM
-                  node right here inside the <form> — Paystack's inline.js
-                  requires its own script tag to be a form descendant. Both
-                  next/script (afterInteractive) and a plain `async` script
-                  tag get hoisted into <head> by Next.js/React 19's resource
-                  handling, which breaks that check, so this must stay a
-                  synchronous script tag. */}
-              {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-              <script src="https://js.paystack.co/v1/inline.js" />
-
               <div className="checkout-fields__grid">
                 <label className="field">
                   <span className="field__label">First name</span>
