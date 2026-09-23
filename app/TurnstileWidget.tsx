@@ -10,7 +10,12 @@ import { useEffect, useRef } from "react";
  * pipeline doesn't reliably inline NEXT_PUBLIC_ env vars at build time (see
  * the same note on PAYSTACK_PUBLIC_KEY in CheckoutClient.tsx).
  */
-const TURNSTILE_SITE_KEY = "0x4AAAAAAE2bKzgvvJ4qRYIs";
+const TURNSTILE_SITE_KEY =
+  process.env.NODE_ENV === "development"
+    ? // Cloudflare's "always passes" test key — the real widget rejects localhost.
+      // Paired with the test secret in lib/turnstile.ts.
+      "1x00000000000000000000AA"
+    : "0x4AAAAAAE2bKzgvvJ4qRYIs";
 
 declare global {
   interface Window {

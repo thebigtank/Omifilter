@@ -1,5 +1,10 @@
 export async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<boolean> {
-  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  // In dev, Cloudflare's "always passes" test secret, paired with the test
+  // site key in TurnstileWidget.tsx.
+  const secretKey =
+    process.env.NODE_ENV === "development"
+      ? "1x0000000000000000000000000000000AA"
+      : process.env.TURNSTILE_SECRET_KEY;
   if (!secretKey) {
     throw new Error("TURNSTILE_SECRET_KEY is not set");
   }
