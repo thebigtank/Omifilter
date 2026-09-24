@@ -11,6 +11,8 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // Each login attempt spends the token; a retry needs a fresh one.
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   const submit = useCallback(
     async (e: React.FormEvent) => {
@@ -35,6 +37,7 @@ export default function AdminLoginPage() {
         if (!res.ok || !data?.ok) {
           setError(data?.reason || "Incorrect password.");
           setSubmitting(false);
+          setTurnstileResetKey((n) => n + 1);
           return;
         }
 
@@ -43,6 +46,7 @@ export default function AdminLoginPage() {
       } catch {
         setError("Something went wrong. Try again.");
         setSubmitting(false);
+        setTurnstileResetKey((n) => n + 1);
       }
     },
     [password, router, turnstileToken],
@@ -65,7 +69,7 @@ export default function AdminLoginPage() {
             />
           </label>
 
-          <TurnstileWidget onToken={setTurnstileToken} />
+          <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileResetKey} />
 
           {error && (
             <p className="checkout-error" role="alert">

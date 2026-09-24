@@ -30,7 +30,18 @@ declare global {
   }
 }
 
-export default function TurnstileWidget({ onToken }: { onToken: (token: string | null) => void }) {
+/**
+ * A Turnstile token is single-use: once the server has verified it, sending it
+ * again fails. Bump `resetKey` after every request that spent the token so the
+ * widget fetches a fresh one (the parent sees `null` until it arrives).
+ */
+export default function TurnstileWidget({
+  onToken,
+  resetKey = 0,
+}: {
+  onToken: (token: string | null) => void;
+  resetKey?: number;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
@@ -65,6 +76,15 @@ export default function TurnstileWidget({ onToken }: { onToken: (token: string |
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (resetKey === 0) return;
+    onToken(null);
+    if (widgetIdRef.current && window.turnstile) {
+      window.turnstile.reset(widgetIdRef.current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetKey]);
 
   return <div ref={containerRef} className="turnstile-widget" />;
 }

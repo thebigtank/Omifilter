@@ -71,6 +71,10 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
   const [paying, setPaying] = useState(false);
   const [qty, setQty] = useState(1);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // /api/checkout/start spends the token; bump this after it so a retry
+  // (failed start, closed Paystack popup) gets a fresh one.
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const resetTurnstile = useCallback(() => setTurnstileResetKey((n) => n + 1), []);
   const [method, setMethod] = useState<PaymentMethod>("paystack");
   const isPod = method === "pod";
   const formRef = useRef<HTMLFormElement>(null);
@@ -172,11 +176,13 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
         const data = await startRes.json().catch(() => null);
         setError(data?.reason || "Couldn't start checkout — try again in a moment.");
         setPaying(false);
+        resetTurnstile();
         return;
       }
     } catch {
       setError("Couldn't start checkout — try again in a moment.");
       setPaying(false);
+      resetTurnstile();
       return;
     }
 
@@ -227,6 +233,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
 
             if (!verifyRes.ok || !data?.ok) {
               setPaying(false);
+              resetTurnstile();
               setError(
                 "We couldn't confirm your payment — please contact support before trying again.",
               );
@@ -242,6 +249,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
             router.push(`/thank-you/${tier.slug}?${params.toString()}`);
           } catch {
             setPaying(false);
+            resetTurnstile();
             setError(
               "We couldn't confirm your payment — please contact support before trying again.",
             );
@@ -250,9 +258,10 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
       },
       onClose: () => {
         setPaying(false);
+        resetTurnstile();
       },
     }).openIframe();
-  }, [form, isPod, method, qty, qtyPriceKobo, router, tier, turnstileToken]);
+  }, [form, isPod, method, qty, qtyPriceKobo, resetTurnstile, router, tier, turnstileToken]);
 
   return (
     <>
@@ -408,7 +417,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
                 </div>
               </fieldset>
 
-              <TurnstileWidget onToken={setTurnstileToken} />
+              <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileResetKey} />
             </form>
 
             {error && (
