@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTier } from "../../../tiers";
 import { insertPendingOrder } from "../../../lib/db";
 import { verifyTurnstileToken } from "../../../lib/turnstile";
+import { isPaymentMethod } from "../../../lib/payment";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, reason: "Invalid request." }, { status: 400 });
   }
 
-  const { reference, tierSlug, qty, email, firstName, lastName, phone, address, state, turnstileToken } = body as Record<string, unknown>;
+  const { reference, tierSlug, qty, email, firstName, lastName, phone, address, state, turnstileToken, paymentMethod } = body as Record<string, unknown>;
 
   if (typeof turnstileToken !== "string" || !turnstileToken) {
     return NextResponse.json({ ok: false, reason: "Verification check missing." }, { status: 400 });
@@ -47,6 +48,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Older cached checkout pages don't send a method; they only knew Paystack.
+  const method = paymentMethod ?? "paystack";
+  if (!isPaymentMethod(method)) {
+    return NextResponse.json({ ok: false, reason: "Invalid payment method." }, { status: 400 });
+  }
+
   const amountKobo = tier.priceKobo * qtyNum;
 
   insertPendingOrder({
@@ -61,6 +68,7 @@ export async function POST(req: NextRequest) {
     tierName: tier.name,
     qty: qtyNum,
     amountKobo,
+    paymentMethod: method,
   });
 
   return NextResponse.json({ ok: true });

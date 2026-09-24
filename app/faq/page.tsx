@@ -4,16 +4,13 @@ import Link from "next/link";
 import "./faq.css";
 import SiteHeader from "../SiteHeader";
 import { FaqList } from "./faq-list";
+import { WHATSAPP_DISPLAY, WHATSAPP_HREF } from "../lib/contact";
 
 export const metadata: Metadata = {
   title: "FAQ — OmiFilter",
   description:
     "Answers to the questions Nigerian families ask before they order OmiFilter — tap fit, E. coli removal, delivery to all 36 states, cartridges and the 30-day money-back guarantee.",
 };
-
-/** OmiFilter's customer care WhatsApp/phone line. */
-const WHATSAPP_DISPLAY = "0916 311 7468";
-const WHATSAPP_HREF = "https://wa.me/2349163117468";
 
 function WhatsAppLink() {
   return (

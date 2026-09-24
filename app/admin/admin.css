@@ -105,6 +105,76 @@
   color: var(--rust);
 }
 
+.admin-badge--paystack {
+  background: var(--cream-3);
+  color: var(--ink-3);
+}
+
+.admin-badge--pod {
+  background: rgba(155, 74, 47, 0.08);
+  color: var(--ink-2);
+  border: 1px solid rgba(155, 74, 47, 0.25);
+}
+
+.admin-ref {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+/* Pay-on-delivery status --------------------------------------------------- */
+
+.admin-pod-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-pod-status__select {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--cream);
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.admin-pod-status__select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.admin-pod-status__select--pending {
+  background: rgba(155, 74, 47, 0.12);
+  color: var(--rust);
+  border-color: transparent;
+}
+
+.admin-pod-status__select--confirmed {
+  border-color: var(--teal);
+  color: var(--teal-dark);
+}
+
+.admin-pod-status__select--delivered {
+  background: rgba(44, 106, 135, 0.14);
+  color: var(--teal-dark);
+  border-color: transparent;
+}
+
+.admin-pod-status__select--cancelled {
+  color: var(--ink-5);
+  text-decoration: line-through;
+}
+
+.admin-pod-status__error {
+  font-size: 12px;
+  color: var(--rust);
+}
+
 /* Login card -------------------------------------------------------------- */
 
 .admin-login-main {

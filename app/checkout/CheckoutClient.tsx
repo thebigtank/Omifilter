@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ShoppingBasket, ShieldCheck } from "lucide-react";
+import { ShoppingBasket, ShieldCheck, Truck } from "lucide-react";
 import { titleCase, type Tier } from "../tiers";
 import TurnstileWidget from "../TurnstileWidget";
 import { trackPixelEvent } from "../lib/fbPixel";
+import type { PaymentMethod } from "../lib/payment";
 
 /** Minimal shape of the Paystack inline payment global loaded by checkout.js. */
 type PaystackPop = {
@@ -70,6 +71,8 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
   const [paying, setPaying] = useState(false);
   const [qty, setQty] = useState(1);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [method, setMethod] = useState<PaymentMethod>("paystack");
+  const isPod = method === "pod";
   const formRef = useRef<HTMLFormElement>(null);
 
   // Paystack charges the per-unit price × quantity, in kobo.
@@ -137,7 +140,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
     }
 
     const paystack = (window as unknown as { PaystackPop?: PaystackPop }).PaystackPop;
-    if (!paystack) {
+    if (!isPod && !paystack) {
       setError("Payment is still loading — try again in a moment.");
       return;
     }
@@ -161,6 +164,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
           address: form.address.trim(),
           state: form.state,
           turnstileToken,
+          paymentMethod: method,
         }),
       });
 
@@ -176,7 +180,15 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
       return;
     }
 
-    paystack.setup({
+    // Pay on delivery: the order is saved, nothing to charge now. The
+    // thank-you page reads the order back by reference for its WhatsApp link.
+    if (isPod) {
+      router.push(`/thank-you/${tier.slug}?${new URLSearchParams({ method: "pod", ref: reference })}`);
+      return;
+    }
+
+    // Checked above: the Paystack path only gets here once inline.js has loaded.
+    paystack!.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email,
       amount: qtyPriceKobo,
@@ -240,7 +252,7 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
         setPaying(false);
       },
     }).openIframe();
-  }, [form, qty, qtyPriceKobo, router, tier, turnstileToken]);
+  }, [form, isPod, method, qty, qtyPriceKobo, router, tier, turnstileToken]);
 
   return (
     <>
@@ -264,8 +276,8 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
               Order the {titleCase(tier.name)}.
             </h1>
             <p className="checkout-form__lede">
-              Tell us where to send it. Paystack handles the payment securely
-              — you’ll be redirected straight back when it’s done.
+              Tell us where to send it, then choose how you’d like to pay —
+              now with Paystack, or when your order arrives.
             </p>
 
             <form
@@ -355,6 +367,47 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
                 </label>
               </div>
 
+              <fieldset className="pay-method">
+                <legend className="field__label">How would you like to pay?</legend>
+                <div className="pay-method__options">
+                  <label className="pay-method__option">
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      value="paystack"
+                      checked={!isPod}
+                      onChange={() => setMethod("paystack")}
+                    />
+                    <span className="pay-method__text">
+                      <span className="pay-method__title">Pay now with Paystack</span>
+                      <span className="pay-method__hint">Card, bank transfer or USSD</span>
+                    </span>
+                  </label>
+                  <label className="pay-method__option">
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      value="pod"
+                      checked={isPod}
+                      onChange={() => setMethod("pod")}
+                    />
+                    <span className="pay-method__text">
+                      <span className="pay-method__title">Pay on delivery</span>
+                      <span className="pay-method__hint">Pay the rider when it arrives</span>
+                    </span>
+                  </label>
+                </div>
+                <div aria-live="polite">
+                  {isPod && (
+                    <p className="pay-method__notice">
+                      Our team will call you to confirm your order before
+                      dispatch. Pay the rider in cash or by bank transfer when
+                      your filter arrives.
+                    </p>
+                  )}
+                </div>
+              </fieldset>
+
               <TurnstileWidget onToken={setTurnstileToken} />
             </form>
 
@@ -371,7 +424,9 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
               disabled={paying || !turnstileToken}
             >
               <ShoppingBasket size={18} strokeWidth={1.75} aria-hidden="true" />
-              {paying ? "Processing payment…" : "Buy Now"}
+              {isPod
+                ? paying ? "Placing order…" : "Place order"
+                : paying ? "Processing payment…" : "Buy Now"}
             </button>
           </section>
 
@@ -436,8 +491,17 @@ export default function CheckoutClient({ tier }: { tier: Tier }) {
             </div>
 
             <p className="checkout-paynote">
-              <ShieldCheck size={16} strokeWidth={1.75} aria-hidden="true" />
-              Pay securely with Paystack
+              {isPod ? (
+                <>
+                  <Truck size={16} strokeWidth={1.75} aria-hidden="true" />
+                  Pay on delivery, cash or transfer
+                </>
+              ) : (
+                <>
+                  <ShieldCheck size={16} strokeWidth={1.75} aria-hidden="true" />
+                  Pay securely with Paystack
+                </>
+              )}
             </p>
           </aside>
         </div>

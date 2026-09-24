@@ -13,6 +13,10 @@ export async function POST(req: NextRequest) {
   if (!order) {
     return NextResponse.json({ ok: false, reason: "Order not found." }, { status: 404 });
   }
+  // Pay-on-delivery orders are marked paid from the admin page, never here.
+  if (order.payment_method !== "paystack") {
+    return NextResponse.json({ ok: false, reason: "Not a Paystack order." }, { status: 400 });
+  }
 
   const result = await verifyTransaction(reference.trim());
   if (!result) {
