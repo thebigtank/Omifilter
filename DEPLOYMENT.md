@@ -117,44 +117,81 @@ changed — see "When you also need to reinstall dependencies" below if
 
 ```sh
 # 1. Build and verify locally first — catch errors before touching the server.
-rm -f data/orders.db data/orders.db-shm data/orders.db-wal   # stale WAL lock can cause SQLITE_BUSY
 npm run build
 
-# 2. Sync source to the server (excludes secrets, build output, and the live DB).
+# 2. Back up the live database (SQLite's online backup — safe while the site runs).
+ssh -i ~/.ssh/omifilter_cpanel -p 21098 omifkplq@162.254.39.53 '
+  source /home/omifkplq/nodevenv/omifilter-app/22/bin/activate
+  cd ~/omifilter-app && mkdir -p ~/omifilter-backups
+  node -e "require(\"better-sqlite3\")(\"/home/omifkplq/omifilter-data/orders.db\", { readonly: true }).backup(process.argv[1]).then(() => console.log(\"backed up\"))" \
+    ~/omifilter-backups/orders-$(date +%Y%m%d-%H%M%S).db
+'
+
+# 3. Sync source to the server (excludes secrets, build output, the live DB,
+#    and Passenger's stderr.log / tmp/restart.txt). The running site serves from
+#    .next, which this doesn't touch, so it keeps working.
 rsync -avz --delete \
   -e "ssh -i ~/.ssh/omifilter_cpanel -p 21098" \
   --exclude node_modules \
-  --exclude .next \
+  --exclude '.next*' \
   --exclude .git \
   --exclude data \
   --exclude .env \
   --exclude .env.local \
   --exclude .DS_Store \
+  --exclude stderr.log \
+  --exclude tmp \
   ./ omifkplq@162.254.39.53:~/omifilter-app/
 
-# 3. Rebuild on the server (must use the venv's Node + webpack).
+# 4. Build on the server into .next-new (must use the venv's Node + webpack).
+#    NEXT_DIST_DIR is read by next.config.ts. The live .next is untouched, so if
+#    this fails the site stays up on the previous build — just fix and rerun.
 ssh -i ~/.ssh/omifilter_cpanel -p 21098 omifkplq@162.254.39.53 '
   source /home/omifkplq/nodevenv/omifilter-app/22/bin/activate
   cd ~/omifilter-app
-  rm -rf .next
-  npx next build --webpack
+  rm -rf .next-new
+  NEXT_DIST_DIR=.next-new npx next build --webpack
 '
 
-# 4. Restart the Passenger-managed Node process to pick up the new build.
-ssh -i ~/.ssh/omifilter_cpanel -p 21098 omifkplq@162.254.39.53 \
-  '/usr/sbin/cloudlinux-selector restart --json --interpreter nodejs --user omifkplq --app-root omifilter-app'
+# 5. Only after step 4 succeeded: swap the new build in and restart. The
+#    previous build is kept as .next-prev for rollback.
+ssh -i ~/.ssh/omifilter_cpanel -p 21098 omifkplq@162.254.39.53 '
+  cd ~/omifilter-app
+  test -f .next-new/BUILD_ID || { echo "no finished build in .next-new"; exit 1; }
+  rm -rf .next-prev && mv .next .next-prev && mv .next-new .next
+  /usr/sbin/cloudlinux-selector restart --json --interpreter nodejs --user omifkplq --app-root omifilter-app
+'
 
-# 5. Verify.
+# 6. Verify.
 curl -s -o /dev/null -w "%{http_code}\n" https://omifilter.com/
 curl -s -o /dev/null -w "%{http_code}\n" https://omifilter.com/checkout/single
 curl -s -o /dev/null -w "%{http_code}\n" -L https://omifilter.com/admin   # should redirect to /admin/login
 ```
 
-Step 3's `next build --webpack` invocation prints a lot of harmless
+**Rollback** (the new build misbehaves after the swap):
+```sh
+ssh -i ~/.ssh/omifilter_cpanel -p 21098 omifkplq@162.254.39.53 '
+  cd ~/omifilter-app
+  mv .next .next-bad && mv .next-prev .next
+  /usr/sbin/cloudlinux-selector restart --json --interpreter nodejs --user omifkplq --app-root omifilter-app
+'
+```
+This restores the previous build only; the source files on the server stay at
+the new version until the next deploy. Database changes aren't rolled back —
+restore from `~/omifilter-backups/` if needed.
+
+Never `rm -rf .next` and build in place (the old step 3): the running site
+loses its build the moment it's deleted, and if the build then fails — as it
+once did on a transient Google Fonts error — checkout returns 500 until a
+build succeeds.
+
+Step 4's `next build --webpack` invocation prints a lot of harmless
 `GLIBC_2.29 not found` warnings (Turbopack's native SWC binary failing to
 load, falling back correctly to WASM/webpack) — those are expected noise,
 not errors. A real failure ends with `Build error occurred` or
-`Build failed because of webpack errors`.
+`Build failed because of webpack errors`. A `next/font` error like
+`Cannot read properties of null (reading '1')` is a failed Google Fonts
+download — rerun step 4.
 
 ### When you also need to reinstall dependencies
 
