@@ -69,15 +69,8 @@ const faqs = [
     ),
   },
   {
-    title: "Why do I have to pay before delivery?",
-    body: (
-      <>
-        We do not offer cash on delivery — it is how delivery scams run in Nigeria, against buyers
-        as much as sellers. Your protection is the 30-day money-back guarantee: if your filter does
-        not arrive, or does not perform as described, we refund every naira. Message us first on{" "}
-        <WhatsAppLink /> if you want to verify us or speak to a customer before you pay anything.
-      </>
-    ),
+    title: "Can I pay on delivery?",
+    body: "Yes. At checkout, choose Pay on delivery. Our team will call you to confirm your order before dispatch, and you pay the rider in cash or by bank transfer when your filter arrives. Prefer to pay now? Paystack takes card, bank transfer and USSD. Either way, every order carries the 30-day money-back guarantee.",
   },
   {
     title: "Do you deliver to my state? How long does it take?",

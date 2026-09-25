@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return {
     title: `Checkout — ${titleCase(tier.name)} | OmiFilter`,
-    description: `Order the ${titleCase(tier.name)} and pay securely with Paystack. Clean water from your own tap, delivered across Nigeria.`,
+    description: `Order the ${titleCase(tier.name)} and pay securely with Paystack or on delivery. Clean water from your own tap, delivered across Nigeria.`,
   };
 }
 

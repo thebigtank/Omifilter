@@ -42,7 +42,8 @@ export default function PoliciesPage() {
                 <p className="policy__lead">
                   OmiWater Filter delivers to all 36 states and the FCT.
                   Orders are processed within 1 to 2 business days of payment
-                  confirmation.
+                  confirmation, or of our confirmation call for pay-on-delivery
+                  orders.
                 </p>
 
                 <p className="policy__rule">Estimated delivery after dispatch</p>
@@ -102,7 +103,8 @@ export default function PoliciesPage() {
                   </li>
                   <li className="policy__point">
                     Approved refunds are processed within 3 to 5 business
-                    days back to your original payment method.
+                    days back to your original payment method, or by bank
+                    transfer if you paid on delivery.
                   </li>
                   <li className="policy__point">
                     Return shipping for items is at the buyer’s cost.

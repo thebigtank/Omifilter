@@ -390,7 +390,7 @@ export default function Home() {
                 Order <span>→</span>
               </button>
               <div className="hero__assurance">
-                No payment on delivery
+                Pay online or on delivery
                 <br />
                 30-day money-back guarantee
               </div>
@@ -691,7 +691,7 @@ export default function Home() {
             <div className="order__head">
               <Reveal as="h2">Choose your protection.</Reveal>
               <Reveal as="p" index={1}>
-                Nationwide delivery. No payment on delivery. Free shipping.
+                Nationwide delivery. Pay online or on delivery. Free shipping.
               </Reveal>
             </div>
             <div className="order__grid">
@@ -869,7 +869,7 @@ export default function Home() {
                 Order {titleCase(tiers[front].name)} Now
               </button>
               <p className="modal__fineprint">
-                No payment on delivery · Free shipping
+                Pay online or on delivery · Free shipping
               </p>
               <p className="modal__fineprint modal__fineprint--emphasis">
                 30-day money-back guarantee
